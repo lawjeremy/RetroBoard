@@ -4,10 +4,10 @@ import Draggable from 'react-draggable';
 
 const Wrapper = styled.div`
 	position: relative;	
-	min-height: 200px;
-  background:#FFF;
-	width: 300px;
-	marign: 40px auto;
+	min-height: 100px;
+ 	background:#FFF;
+	width: 100%;
+	margin-bottom: 10px;
 	z-index: 0;
 
 	-webkit-box-shadow: 7px 6px 26px -3px rgba(0,0,0,0.43);
@@ -15,9 +15,10 @@ const Wrapper = styled.div`
 	box-shadow: 7px 6px 26px -3px rgba(0,0,0,0.43);
 `;
 
-const Card = ({children}) => {
+const Card = ({children, id, handleStop}) => {
+	console.log('I am sparta');
 	return (
-		<Draggable bounds="body" >
+		<Draggable id={id} onDrag={handleStop} bounds="body" >
 				<Wrapper>
 						{children}
 				</Wrapper>
