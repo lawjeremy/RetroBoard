@@ -9,18 +9,28 @@ const Wrapper = styled.div`
 	width: 100%;
 	margin-bottom: 10px;
 	z-index: 0;
+	opacity: 0.8;
 
 	-webkit-box-shadow: 7px 6px 26px -3px rgba(0,0,0,0.43);
 	-moz-box-shadow: 7px 6px 26px -3px rgba(0,0,0,0.43);
 	box-shadow: 7px 6px 26px -3px rgba(0,0,0,0.43);
 `;
 
-const Card = ({children, id, handleStop, handleDrag}) => {
+const Remove = styled.button`
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	border: none;
+`;
+
+const Card = ({children, id, handleStop, handleDrag, removeCard}) => {
 	console.log('I am sparta');
 	return (
 		<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" >
+			
 				<Wrapper>
-						{children}
+					<Remove className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</Remove>
+					{children}
 				</Wrapper>
 		</Draggable>
 	)

@@ -12,7 +12,14 @@ const Wrapper = styled.div`
 `;
 
 const AddCardButton = styled.button`
-	margin-bottom: 10px;
+	position: relative;
+	width: 50%;
+	margin: 10px auto;
+	
+	& > i {
+		vertical-align: middle;
+		font-size: 16px;
+	}
 `;
 
 // refactor - move somewhere else
@@ -44,6 +51,7 @@ class App extends Component {
 			],
 			highlight: -1,
 			rand: Math.random(),
+			counter: 6,
 		}
 	}
 
@@ -88,11 +96,24 @@ class App extends Component {
 		this.setState(prevState => ({
 			[contentCol]: [...prevState[contentCol],
 				{
-					id: prevState.content.length,
+					id: prevState.counter,
 					text: "Test"
 				}
-			]
+			],
+			counter: prevState.counter+1,
 		}));
+	}
+
+	removeCard = (index, col) => () => {
+		const contentCol = `content${col}`;
+		
+		this.setState(prevState => {
+			const content = prevState[contentCol].slice();
+			content.splice(index, 1);
+			return {
+				[contentCol]: content,
+			};
+		});
 	}
 
 	render() {
@@ -104,34 +125,43 @@ class App extends Component {
 		return (
 			<Wrapper className="App" key={rand}>    
 				<Board>
-					<CardColumn label="To Do" id={0} bkgColor='#444140' highlight={highlight === 0}>    
-						<AddCardButton onClick={this.addCard(0)}>add Card</AddCardButton>
+					<CardColumn label="To Do" id={0} bkgColor='#EFD0CA' highlight={highlight === 0}>    
+						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(0)}>
+							Add card <i className="material-icons">add_circle_outline</i>					
+						</AddCardButton>
 						{content0.map( (e, index) => (
 							<Card 
 								handleStop={this.handleStop(index, 0)} 
 								handleDrag={this.handleDrag(index, 0)}
+								removeCard={this.removeCard(index, 0)}
 								id={e.id}>
 									{e.text} #{e.id}
 							</Card>
 						))}          
 					</CardColumn>
-					<CardColumn label="In Progress" id={1} bkgColor='#FFA987' highlight={highlight === 1}>    
-						<AddCardButton onClick={this.addCard(1)}>add Card</AddCardButton>
+					<CardColumn label="In Progress" id={1} bkgColor='#C1BCAC' highlight={highlight === 1}>    
+						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(1)}>
+							Add card <i className="material-icons">add_circle_outline</i>					
+						</AddCardButton>
 						{content1.map( (e, index) => (
 							<Card 
 								handleStop={this.handleStop(index, 1)} 
 								handleDrag={this.handleDrag(index, 1)}
+								removeCard={this.removeCard(index, 1)}
 								id={e.id}>
 									{e.text} #{e.id}
 							</Card>
 						))}          
 					</CardColumn>
-					<CardColumn label="Done" id={2} bkgColor='#E54B4B' highlight={highlight === 2}>    
-						<AddCardButton onClick={this.addCard(2)}>add Card</AddCardButton>
+					<CardColumn label="Done" id={2} bkgColor='#979B8D' highlight={highlight === 2}>    
+						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(2)}>
+							Add card <i className="material-icons">add_circle_outline</i>					
+						</AddCardButton>
 						{content2.map( (e, index) => (
 							<Card 
 								handleStop={this.handleStop(index, 2)} 
 								handleDrag={this.handleDrag(index, 2)}
+								removeCard={this.removeCard(index, 2)}
 								id={e.id}>
 									{e.text} #{e.id}
 							</Card>
