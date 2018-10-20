@@ -2,16 +2,36 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import styled from 'styled-components';
+import Board from './components/Board';
 import Card from './components/Card';
 import CardColumn from './components/CardColumn';
+import arrayMove from 'array-move';
 
 const Wrapper = styled.div`
 	min-height: 100vh;
 `;
 
 const AddCardButton = styled.button`
-	margin-bottom: 10px;
+	margin: 10px auto;
+	display: inline-flex;
+  	vertical-align: middle;
+  	align-items: center;
+	
+	& > i {
+		vertical-align: middle;
+		font-size: 18px;
+		margin-left: 5px;
+	}
 `;
+
+// refactor - move somewhere else
+const calcNewCol = (x, col) => {
+	const sign = Math.sign(x);
+	const abs = Math.abs(x)
+	// how many cards up or down are we moving?
+	const inc = abs > 800 ? sign*2 : abs > 300 ? sign*1 : 0;	
+	return col + inc;
+}
 
 
 class App extends Component {
@@ -19,44 +39,137 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			content: [{ id: 0, text: "Test"}],
-			number: '',
+			content0: [
+				{ id: 0, pos: 0, text: "Test A"},
+				{ id: 1, pos: 1, text: "Test B"}		
+			],
+			content1: [
+				{ id: 2, pos: 0, text: "Test C"},
+				{ id: 3, pos: 1, text: "Test D"},		
+			],
+			content2: [
+				{ id: 4, pos: 0, text: "Test E"},
+				{ id: 5, pos: 1, text: "Test F"},		
+			],
+			highlight: -1,
+			rand: Math.random(),
+			counter: 6,
 		}
 	}
 
-	handleStop = (e, ui) => {
-		console.log(ui);
-	
+	// index = pos in array, col = col index
+	handleStop = (index, col) => (e, ui) => {		
+		const newCol = calcNewCol(ui.x, col);
+		const fromColKey = `content${col}`;
+		const toColKey = `content${newCol}`;
+
+		this.setState(prevState => {			
+			
+			// some array surgery
+			let fromContent = prevState[fromColKey].slice();
+			let toContent = prevState[toColKey].slice();
+			const contentItem = col !== newCol ? fromContent.splice(index,1).pop() : null;
+			if (contentItem)
+				toContent.push(contentItem)
+
+			return {
+				rand: Math.random(),	
+				[fromColKey]: fromContent,
+				[toColKey]: toContent,
+				highlight: -1,
+			};
+		});
+	}	
+
+	// index = pos in array, col = col index
+	// used to do border highlight
+	handleDrag = (index, col) => (e, ui) => {			
+		const newCol = calcNewCol(ui.x, col);
+		this.setState(prevState => {		
+			return {
+				highlight: newCol !== col ? newCol : -1,
+			};
+		});
 	}
 	
-	
 	// pushes a card onto state
-	addCard = () => {
+	addCard = (col) => () => {
+		const contentCol = `content${col}`;
 		this.setState(prevState => ({
-			content: [...prevState.content,
+			[contentCol]: [...prevState[contentCol],
 				{
-					id: prevState.content.length,
+					id: prevState.counter,
 					text: "Test"
 				}
-			]
+			],
+			counter: prevState.counter+1,
 		}));
 	}
 
-	render() {
-		console.log('im am reborn');
-		const { content } = this.state;
-		const sortedContent = content.sort( (a,b) => {
-			return a.id - b.id;
+	removeCard = (index, col) => () => {
+		const contentCol = `content${col}`;
+		
+		this.setState(prevState => {
+			const content = prevState[contentCol].slice();
+			content.splice(index, 1);
+			return {
+				[contentCol]: content,
+			};
 		});
+	}
+
+	render() {
+		const { content0, content1, content2, rand, highlight } = this.state;
+		// const sortedContent = content.sort( (a,b) => {
+		// 	return a.pos - b.pos;
+		// });
 
 		return (
-			<Wrapper className="App">    
-				<CardColumn label="To Do" id={1}>    
-				<AddCardButton onClick={this.addCard}>add Card</AddCardButton>
-					{sortedContent.map( i => (
-						<Card handleStop={this.handleStop} id={i.id}>{i.text} #{i.id}</Card>
-					))}          
-				</CardColumn>
+			<Wrapper className="App" key={rand}>   
+				<Board>
+					<CardColumn label="To Do" id={0} bkgColor='#EFD0CA' highlight={highlight === 0}>    
+						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(0)}>
+							Add card <i className="material-icons">add_circle_outline</i>					
+						</AddCardButton>
+						{content0.map( (e, index) => (
+							<Card 
+								handleStop={this.handleStop(index, 0)} 
+								handleDrag={this.handleDrag(index, 0)}
+								removeCard={this.removeCard(index, 0)}
+								id={e.id}>
+									{e.text}
+							</Card>
+						))}          
+					</CardColumn>
+					<CardColumn label="In Progress" id={1} bkgColor='#C1BCAC' highlight={highlight === 1}>    
+						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(1)}>
+							Add card <i className="material-icons">add_circle_outline</i>					
+						</AddCardButton>
+						{content1.map( (e, index) => (
+							<Card 
+								handleStop={this.handleStop(index, 1)} 
+								handleDrag={this.handleDrag(index, 1)}
+								removeCard={this.removeCard(index, 1)}
+								id={e.id}>
+									{e.text}
+							</Card>
+						))}          
+					</CardColumn>
+					<CardColumn label="Done" id={2} bkgColor='#979B8D' highlight={highlight === 2}>    
+						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(2)}>
+							Add card <i className="material-icons">add_circle_outline</i>					
+						</AddCardButton>
+						{content2.map( (e, index) => (
+							<Card 
+								handleStop={this.handleStop(index, 2)} 
+								handleDrag={this.handleDrag(index, 2)}
+								removeCard={this.removeCard(index, 2)}
+								id={e.id}>
+									{e.text}
+							</Card>
+						))}          
+					</CardColumn>
+				</Board>
 			</Wrapper>
 		);
 	}
