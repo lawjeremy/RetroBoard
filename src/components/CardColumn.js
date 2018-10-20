@@ -19,8 +19,8 @@ const Ruler = styled.hr`
 const CardColumn = ({children, id, label, bkgColor, highlight}) => {
     return (
         <Wrapper id={id} bkgColor={bkgColor} highlight={highlight}>
-            <h2>{label}</h2>
-            <Ruler/>
+            <h2 className="display-4">{label}</h2>
+            <Ruler className="my-4" />
             {children}
         </Wrapper>
     )

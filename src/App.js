@@ -12,13 +12,15 @@ const Wrapper = styled.div`
 `;
 
 const AddCardButton = styled.button`
-	position: relative;
-	width: 50%;
 	margin: 10px auto;
+	display: inline-flex;
+  	vertical-align: middle;
+  	align-items: center;
 	
 	& > i {
 		vertical-align: middle;
-		font-size: 16px;
+		font-size: 18px;
+		margin-left: 5px;
 	}
 `;
 
@@ -123,7 +125,7 @@ class App extends Component {
 		// });
 
 		return (
-			<Wrapper className="App" key={rand}>    
+			<Wrapper className="App" key={rand}>   
 				<Board>
 					<CardColumn label="To Do" id={0} bkgColor='#EFD0CA' highlight={highlight === 0}>    
 						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(0)}>
@@ -135,7 +137,7 @@ class App extends Component {
 								handleDrag={this.handleDrag(index, 0)}
 								removeCard={this.removeCard(index, 0)}
 								id={e.id}>
-									{e.text} #{e.id}
+									{e.text}
 							</Card>
 						))}          
 					</CardColumn>
@@ -149,7 +151,7 @@ class App extends Component {
 								handleDrag={this.handleDrag(index, 1)}
 								removeCard={this.removeCard(index, 1)}
 								id={e.id}>
-									{e.text} #{e.id}
+									{e.text}
 							</Card>
 						))}          
 					</CardColumn>
@@ -163,7 +165,7 @@ class App extends Component {
 								handleDrag={this.handleDrag(index, 2)}
 								removeCard={this.removeCard(index, 2)}
 								id={e.id}>
-									{e.text} #{e.id}
+									{e.text}
 							</Card>
 						))}          
 					</CardColumn>
