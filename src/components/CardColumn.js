@@ -6,14 +6,15 @@ const Wrapper = styled.div`
     width: 500px;
     flex-direction: column;
     justify-content: flex-start;
-    background-color: grey;
     min-height: 100vh;
     padding: 10px;
+    background-color: ${({ bkgColor }) => bkgColor};
+    border: 2px solid ${({ highlight }) => highlight ? 'black' : 'transparent'};
 `;
 
-const CardColumn = ({children, id, label}) => {
+const CardColumn = ({children, id, label, bkgColor, highlight}) => {
     return (
-        <Wrapper id={id}>
+        <Wrapper id={id} bkgColor={bkgColor} highlight={highlight}>
             <h2>{label}</h2>
             {children}
         </Wrapper>

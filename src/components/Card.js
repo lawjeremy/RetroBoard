@@ -15,10 +15,10 @@ const Wrapper = styled.div`
 	box-shadow: 7px 6px 26px -3px rgba(0,0,0,0.43);
 `;
 
-const Card = ({children, id, handleStop}) => {
+const Card = ({children, id, handleStop, handleDrag}) => {
 	console.log('I am sparta');
 	return (
-		<Draggable id={id} onDrag={handleStop} bounds="body" >
+		<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" >
 				<Wrapper>
 						{children}
 				</Wrapper>
