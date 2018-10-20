@@ -20,7 +20,6 @@ const ButtonGroup = styled.div`
 	display: inline-flex;
 	position: absolute;
 	top: 0px;
-	right: 0px;
 	border: none;
 	line-height: 38px;
 	vertical-align: top;
@@ -41,13 +40,22 @@ const DragHandle = styled.strong`
 `;
 
 
-const Card = ({children, id, handleStop, handleDrag, removeCard}) => {
+const Card = (props) => {
+	const {children, id, handleStop, handleDrag, removeCard, toggleFavourite, favourite} = props;
+
 	return (
 		<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" handle="strong" >			
 				<Wrapper>
 					<HeaderBar>
+						<ButtonGroup style={{ left: '0px' }}>
+							<button className='btn btn-outline-dark material-icons'
+								onClick={toggleFavourite}
+							>
+								{favourite === true ? 'favorite_border' : 'favorite'}
+							</button>
+						</ButtonGroup>
 						<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
-						<ButtonGroup>
+						<ButtonGroup style={{ right: '0px' }}>
 							<button className='btn btn-outline-dark material-icons'>thumb_up</button>
 							<button className='btn btn-outline-dark material-icons'>thumb_down</button>
 							<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>

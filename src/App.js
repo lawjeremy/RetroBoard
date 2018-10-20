@@ -107,11 +107,21 @@ class App extends Component {
 	}
 
 	removeCard = (index, col) => () => {
-		const contentCol = `content${col}`;
-		
+		const contentCol = `content${col}`;		
 		this.setState(prevState => {
 			const content = prevState[contentCol].slice();
 			content.splice(index, 1);
+			return {
+				[contentCol]: content,
+			};
+		});
+	}
+
+	toggleFavourite = (index, col) => () => {
+		const contentCol = `content${col}`;
+		this.setState(prevState => {
+			const content = prevState[contentCol].slice();
+			content[index].favourite = !prevState[contentCol][index].favourite;
 			return {
 				[contentCol]: content,
 			};
@@ -136,6 +146,8 @@ class App extends Component {
 								handleStop={this.handleStop(index, 0)} 
 								handleDrag={this.handleDrag(index, 0)}
 								removeCard={this.removeCard(index, 0)}
+								toggleFavourite={this.toggleFavourite(index, 0)}
+								favourite={e.favourite}
 								id={e.id}>
 									{e.text}
 							</Card>
@@ -150,6 +162,8 @@ class App extends Component {
 								handleStop={this.handleStop(index, 1)} 
 								handleDrag={this.handleDrag(index, 1)}
 								removeCard={this.removeCard(index, 1)}
+								toggleFavourite={this.toggleFavourite(index, 1)}
+								favourite={e.favourite}
 								id={e.id}>
 									{e.text}
 							</Card>
@@ -164,6 +178,8 @@ class App extends Component {
 								handleStop={this.handleStop(index, 2)} 
 								handleDrag={this.handleDrag(index, 2)}
 								removeCard={this.removeCard(index, 2)}
+								toggleFavourite={this.toggleFavourite(index, 2)}
+								favourite={e.favourite}
 								id={e.id}>
 									{e.text}
 							</Card>
