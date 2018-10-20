@@ -20,7 +20,6 @@ const ButtonGroup = styled.div`
 	display: inline-flex;
 	position: absolute;
 	top: 0px;
-	right: 0px;
 	border: none;
 	line-height: 38px;
 	vertical-align: top;
@@ -40,20 +39,38 @@ const DragHandle = styled.strong`
 	cursor: move !important;
 `;
 
+const VoteResult = styled.div`
+	color: ${({ negative }) => negative ? 'red': 'inherit'}; 
+`;
 
-const Card = ({children, id, handleStop, handleDrag, removeCard}) => {
+const InputTextArea = styled.textarea`
+	margin: 10px;
+	width: 90%;
+`;
+
+const Card = (props) => {
+	const {id, handleStop, handleDrag, removeCard, toggleFavourite, favourite, vote = 0, addVote, handleChange, value} = props;
+
 	return (
 		<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" handle="strong" >			
 				<Wrapper>
 					<HeaderBar>
+						<ButtonGroup style={{ left: '0px' }}>
+							<button className='btn btn-outline-dark material-icons'
+								onClick={toggleFavourite}
+							>
+								{favourite === true ? 'favorite' : 'favorite_border'}
+							</button>
+						</ButtonGroup>
 						<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
-						<ButtonGroup>
-							<button className='btn btn-outline-dark material-icons'>thumb_up</button>
-							<button className='btn btn-outline-dark material-icons'>thumb_down</button>
+						<ButtonGroup style={{ right: '0px' }}>
+							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
+							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
+							<VoteResult negative={Math.sign(vote)}>{vote}</VoteResult>
 							<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
 						</ButtonGroup>						
 					</HeaderBar>					
-					{children}
+					<InputTextArea value={value} onChange={handleChange} rows={3} />
 				</Wrapper>
 		</Draggable>
 	)

@@ -6,15 +6,17 @@ import Board from './components/Board';
 import Card from './components/Card';
 import CardColumn from './components/CardColumn';
 import arrayMove from 'array-move';
+import sanitize from './utils/ftfy_profanity';
 
 const Wrapper = styled.div`
 	min-height: 100vh;
 `;
 
 const AddCardButton = styled.button`
-	margin: 10px auto;
+	margin: 0px auto;
+	margin-bottom: 20px;
 	display: inline-flex;
-  	vertical-align: middle;
+	vertical-align: middle;
   	align-items: center;
 	
 	& > i {
@@ -50,6 +52,11 @@ class App extends Component {
 			content2: [
 				{ id: 4, pos: 0, text: "Test E"},
 				{ id: 5, pos: 1, text: "Test F"},		
+			],
+			columns: [
+				{ id: 0, label: "To Do", bkgColor: "#EFD0CA", contentRef: 'content0' },
+				{ id: 1, label: "In Progress", bkgColor: "#C1BCAC", contentRef: 'content1' },
+				{ id: 2, label: "Done", bkgColor: "#979B8D", contentRef: 'content2' },
 			],
 			highlight: -1,
 			rand: Math.random(),
@@ -99,7 +106,7 @@ class App extends Component {
 			[contentCol]: [...prevState[contentCol],
 				{
 					id: prevState.counter,
-					text: "Test"
+					text: '',
 				}
 			],
 			counter: prevState.counter+1,
@@ -107,8 +114,7 @@ class App extends Component {
 	}
 
 	removeCard = (index, col) => () => {
-		const contentCol = `content${col}`;
-		
+		const contentCol = `content${col}`;		
 		this.setState(prevState => {
 			const content = prevState[contentCol].slice();
 			content.splice(index, 1);
@@ -118,8 +124,44 @@ class App extends Component {
 		});
 	}
 
+	toggleFavourite = (index, col) => () => {
+		const contentCol = `content${col}`;
+		this.setState(prevState => {
+			const content = prevState[contentCol].slice();
+			content[index].favourite = !prevState[contentCol][index].favourite;
+			return {
+				[contentCol]: content,
+			};
+		});
+	}
+
+	// todo: refactor
+	// Card should be converted to be a stateful component with a handleChange func, a debounce call should update the persistent store
+	handleChange = (index, col) => (e) => {
+		const newValue = sanitize(e.target.value);
+		const contentCol = `content${col}`;
+		this.setState(prevState => {
+			const content = prevState[contentCol].slice();
+			content[index].text = newValue;
+			return {
+				[contentCol]: content,
+			};
+		});
+	}	
+
+	addVote = (index, col) => (inc) => {
+		const contentCol = `content${col}`;
+		this.setState(prevState => {
+			const content = prevState[contentCol].slice();
+			content[index].vote = (content[index].vote ? content[index].vote : 0) + inc;
+			return {
+				[contentCol]: content,
+			};
+		});
+	}
+
 	render() {
-		const { content0, content1, content2, rand, highlight } = this.state;
+		const { columns, rand, highlight } = this.state;
 		// const sortedContent = content.sort( (a,b) => {
 		// 	return a.pos - b.pos;
 		// });
@@ -127,48 +169,27 @@ class App extends Component {
 		return (
 			<Wrapper className="App" key={rand}>   
 				<Board>
-					<CardColumn label="To Do" id={0} bkgColor='#EFD0CA' highlight={highlight === 0}>    
-						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(0)}>
+					{columns.map( col => (
+						<CardColumn key={col.id} id={col.id} label={col.label}  bkgColor={col.bkgColor} highlight={highlight === col.id}>    
+						<AddCardButton className="btn btn-outline-secondary btn-lg" onClick={this.addCard(col.id)}>
 							Add card <i className="material-icons">add_circle_outline</i>					
 						</AddCardButton>
-						{content0.map( (e, index) => (
+						{this.state[col.contentRef].map( (e, index) => (
 							<Card 
-								handleStop={this.handleStop(index, 0)} 
-								handleDrag={this.handleDrag(index, 0)}
-								removeCard={this.removeCard(index, 0)}
-								id={e.id}>
-									{e.text}
-							</Card>
+								id={e.id}
+								handleChange={this.handleChange(index, col.id)} 
+								value={e.text}
+								handleStop={this.handleStop(index, col.id)} 
+								handleDrag={this.handleDrag(index, col.id)}
+								removeCard={this.removeCard(index, col.id)}
+								toggleFavourite={this.toggleFavourite(index, col.id)}
+								favourite={e.favourite}
+								vote={e.vote}
+								addVote={this.addVote(index, col.id)}
+							/>
 						))}          
-					</CardColumn>
-					<CardColumn label="In Progress" id={1} bkgColor='#C1BCAC' highlight={highlight === 1}>    
-						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(1)}>
-							Add card <i className="material-icons">add_circle_outline</i>					
-						</AddCardButton>
-						{content1.map( (e, index) => (
-							<Card 
-								handleStop={this.handleStop(index, 1)} 
-								handleDrag={this.handleDrag(index, 1)}
-								removeCard={this.removeCard(index, 1)}
-								id={e.id}>
-									{e.text}
-							</Card>
-						))}          
-					</CardColumn>
-					<CardColumn label="Done" id={2} bkgColor='#979B8D' highlight={highlight === 2}>    
-						<AddCardButton className="btn btn-outline-secondary" onClick={this.addCard(2)}>
-							Add card <i className="material-icons">add_circle_outline</i>					
-						</AddCardButton>
-						{content2.map( (e, index) => (
-							<Card 
-								handleStop={this.handleStop(index, 2)} 
-								handleDrag={this.handleDrag(index, 2)}
-								removeCard={this.removeCard(index, 2)}
-								id={e.id}>
-									{e.text}
-							</Card>
-						))}          
-					</CardColumn>
+						</CardColumn>		
+					))}					
 				</Board>
 			</Wrapper>
 		);
