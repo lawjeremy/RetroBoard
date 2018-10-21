@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Board = styled.div`
 	display: flex;
-	justify-content: flex-start;
+	justify-content: center;
 	flex-direction: row;
 `;
 

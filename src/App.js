@@ -7,9 +7,11 @@ import Card from './components/Card';
 import CardColumn from './components/CardColumn';
 import arrayMove from 'array-move';
 import sanitize from './utils/ftfy_profanity';
+import { CARD_HEIGHT } from './constants'
 
 const Wrapper = styled.div`
 	min-height: 100vh;
+	margin: 0px auto;
 `;
 
 const AddCardButton = styled.button`
@@ -34,7 +36,6 @@ const calcNewCol = (x, col) => {
 	const inc = abs > 800 ? sign*2 : abs > 300 ? sign*1 : 0;	
 	return col + inc;
 }
-
 
 class App extends Component {
 
@@ -66,6 +67,7 @@ class App extends Component {
 
 	// index = pos in array, col = col index
 	handleStop = (index, col) => (e, ui) => {		
+		console.log(ui);
 		const newCol = calcNewCol(ui.x, col);
 		const fromColKey = `content${col}`;
 		const toColKey = `content${newCol}`;
