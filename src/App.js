@@ -6,8 +6,7 @@ import Board from './components/Board';
 import Card from './components/Card';
 import CardColumn from './components/CardColumn';
 import arrayMove from 'array-move';
-import sanitize from './utils/ftfy_profanity';
-import { save, fetch } from './data/comment';
+import { fetch, save } from './data/comment';
 
 const Wrapper = styled.div`
 	min-height: 100vh;
@@ -65,13 +64,11 @@ class App extends Component {
 		}
 	}
 
-	componentDidMount(){
-		fetch().then((comments) => {
-			comments.map((comment)=>{
-				this.addCard(1, comment.text)();
-			})
+	async componentDidMount(){
+		const comments = await fetch();
+		comments.map((comment) => {
+			this.addCard(1, comment.text)();
 		});
-		
 	}
 
 	// index = pos in array, col = col index
@@ -145,19 +142,6 @@ class App extends Component {
 		});
 	}
 
-	// todo: refactor
-	// Card should be converted to be a stateful component with a handleChange func, a debounce call should update the persistent store
-	handleChange = (index, col) => (e) => {
-		const newValue = sanitize(e.target.value);
-		const contentCol = `content${col}`;
-		this.setState(prevState => {
-			const content = prevState[contentCol].slice();
-			content[index].text = newValue;
-			return {
-				[contentCol]: content,
-			};
-		});
-	}	
 
 	addVote = (index, col) => (inc) => {
 		const contentCol = `content${col}`;
@@ -184,20 +168,22 @@ class App extends Component {
 						<AddCardButton className="btn btn-outline-secondary btn-lg" onClick={this.addCard(col.id)}>
 							Add card <i className="material-icons">add_circle_outline</i>					
 						</AddCardButton>
-						{this.state[col.contentRef].map( (e, index) => (
-							<Card 
-								id={e.id}
-								handleChange={this.handleChange(index, col.id)} 
-								value={e.text}
-								handleStop={this.handleStop(index, col.id)} 
-								handleDrag={this.handleDrag(index, col.id)}
-								removeCard={this.removeCard(index, col.id)}
-								toggleFavourite={this.toggleFavourite(index, col.id)}
-								favourite={e.favourite}
-								vote={e.vote}
-								addVote={this.addVote(index, col.id)}
-							/>
-						))}          
+						{this.state[col.contentRef].map( (e, index) => { 
+							return (
+						
+								<Card 
+									id={e.id}
+									value={e.text}
+									handleStop={this.handleStop(index, col.id)} 
+									handleDrag={this.handleDrag(index, col.id)}
+									removeCard={this.removeCard(index, col.id)}
+									toggleFavourite={this.toggleFavourite(index, col.id)}
+									favourite={e.favourite}
+									vote={e.vote}
+									addVote={this.addVote(index, col.id)}
+								/>
+							)}
+						)}          
 						</CardColumn>		
 					))}					
 				</Board>

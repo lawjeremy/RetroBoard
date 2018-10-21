@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
+import sanitize from '../utils/ftfy_profanity';
 
 const Wrapper = styled.div`
 	position: relative;	
@@ -48,33 +49,55 @@ const InputTextArea = styled.textarea`
 	width: 90%;
 `;
 
-const Card = (props) => {
-	const {id, handleStop, handleDrag, removeCard, toggleFavourite, favourite, vote = 0, addVote, handleChange, value} = props;
+class Card extends Component {
 
-	return (
-		<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" handle="strong" >			
-				<Wrapper>
-					<HeaderBar>
-						<ButtonGroup style={{ left: '0px' }}>
-							<button className='btn btn-outline-dark material-icons'
-								onClick={toggleFavourite}
-							>
-								{favourite === true ? 'favorite' : 'favorite_border'}
-							</button>
-						</ButtonGroup>
-						<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
-						<ButtonGroup style={{ right: '0px' }}>
-							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
-							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
-							<VoteResult negative={Math.sign(vote)}>{vote}</VoteResult>
-							<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
-						</ButtonGroup>						
-					</HeaderBar>					
-					<InputTextArea value={value} onChange={handleChange} rows={3} />
-				</Wrapper>
-		</Draggable>
-	)
+	constructor(props){
+		super(props);
+		this.state = {
+			text: props.value || '',
+		}
+	}
 
-};
+	handleChange = (e) => {
+		const newValue = sanitize(e.target.value);
+		this.setState({
+			text: newValue,
+		});
+
+		//TODO: Debounce and save
+	}	
+
+	render() {
+
+		const {id, handleStop, handleDrag, removeCard, toggleFavourite, favourite, vote = 0, addVote, value} = this.props;
+
+		const { text } = this.state;
+
+		return (
+			<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" handle="strong" >			
+					<Wrapper>
+						<HeaderBar>
+							<ButtonGroup style={{ left: '0px' }}>
+								<button className='btn btn-outline-dark material-icons'
+									onClick={toggleFavourite}
+								>
+									{favourite === true ? 'favorite' : 'favorite_border'}
+								</button>
+							</ButtonGroup>
+							<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
+							<ButtonGroup style={{ right: '0px' }}>
+								<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
+								<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
+								<VoteResult negative={Math.sign(vote)}>{vote}</VoteResult>
+								<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
+							</ButtonGroup>						
+						</HeaderBar>					
+						<InputTextArea value={text} onChange={this.handleChange} rows={3} />
+					</Wrapper>
+			</Draggable>
+		);
+	}
+	
+}
 
 export default Card;
