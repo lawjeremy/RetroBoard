@@ -7,6 +7,7 @@ import Card from './components/Card';
 import CardColumn from './components/CardColumn';
 import arrayMove from 'array-move';
 import sanitize from './utils/ftfy_profanity';
+import { save, fetch } from './data/comment';
 
 const Wrapper = styled.div`
 	min-height: 100vh;
@@ -64,6 +65,15 @@ class App extends Component {
 		}
 	}
 
+	componentDidMount(){
+		fetch().then((comments) => {
+			comments.map((comment)=>{
+				this.addCard(1, comment.text)();
+			})
+		});
+		
+	}
+
 	// index = pos in array, col = col index
 	handleStop = (index, col) => (e, ui) => {		
 		const newCol = calcNewCol(ui.x, col);
@@ -100,13 +110,13 @@ class App extends Component {
 	}
 	
 	// pushes a card onto state
-	addCard = (col) => () => {
+	addCard = (col, text = '') => () => {
 		const contentCol = `content${col}`;
 		this.setState(prevState => ({
 			[contentCol]: [...prevState[contentCol],
 				{
 					id: prevState.counter,
-					text: '',
+					text: text,
 				}
 			],
 			counter: prevState.counter+1,
