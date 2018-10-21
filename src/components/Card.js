@@ -4,7 +4,7 @@ import Draggable from 'react-draggable';
 
 const Wrapper = styled.div`
 	position: relative;	
-	min-height: 150px;
+	min-height: 140px;
  	background:#FFF;
 	width: 100%;
 	margin-bottom: 10px;
@@ -41,12 +41,15 @@ const DragHandle = styled.strong`
 
 const VoteResult = styled.div`
 	color: ${({ negative }) => negative ? 'red': 'inherit'}; 
+	margin: 0px 3px;
 `;
 
 const InputTextArea = styled.textarea`
 	margin: 10px;
 	width: 90%;
 `;
+
+
 
 const Card = (props) => {
 	const {id, handleStop, handleDrag, removeCard, toggleFavourite, favourite, vote = 0, addVote, handleChange, value} = props;
@@ -65,8 +68,8 @@ const Card = (props) => {
 						<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
 						<ButtonGroup style={{ right: '0px' }}>
 							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
+							<VoteResult negative={vote < 0}>{vote}</VoteResult>
 							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
-							<VoteResult negative={Math.sign(vote)}>{vote}</VoteResult>
 							<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
 						</ButtonGroup>						
 					</HeaderBar>					
