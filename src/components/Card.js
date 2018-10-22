@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Draggable from 'react-draggable';
+
 
 const Wrapper = styled.div`
 	position: relative;	
@@ -49,35 +49,30 @@ const InputTextArea = styled.textarea`
 	width: 90%;
 `;
 
-
-
 const Card = (props) => {
-	const {id, handleStop, handleDrag, removeCard, toggleFavourite, favourite, vote = 0, addVote, handleChange, value} = props;
+	const {id, removeCard, toggleFavourite, favourite, vote = 0, addVote, handleChange, value} = props;
 
 	return (
-		<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" handle="strong" >			
-				<Wrapper>
-					<HeaderBar>
-						<ButtonGroup style={{ left: '0px' }}>
-							<button className='btn btn-outline-dark material-icons'
-								onClick={toggleFavourite}
-							>
-								{favourite === true ? 'favorite' : 'favorite_border'}
-							</button>
-						</ButtonGroup>
-						<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
-						<ButtonGroup style={{ right: '0px' }}>
-							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
-							<VoteResult negative={vote < 0}>{vote}</VoteResult>
-							<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
-							<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
-						</ButtonGroup>						
-					</HeaderBar>					
-					<InputTextArea value={value} onChange={handleChange} rows={3} />
-				</Wrapper>
-		</Draggable>
+		<Wrapper>
+			<HeaderBar>
+				<ButtonGroup style={{ left: '0px' }}>
+					<button className='btn btn-outline-dark material-icons'
+						onClick={toggleFavourite}
+					>
+						{favourite === true ? 'favorite' : 'favorite_border'}
+					</button>
+				</ButtonGroup>
+				<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
+				<ButtonGroup style={{ right: '0px' }}>
+					<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
+					<VoteResult negative={vote < 0}>{vote}</VoteResult>
+					<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
+					<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
+				</ButtonGroup>						
+			</HeaderBar>					
+			<InputTextArea value={value} onChange={handleChange} rows={3} />
+		</Wrapper>
 	)
-
 };
 
 export default Card;
