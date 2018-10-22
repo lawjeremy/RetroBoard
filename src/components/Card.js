@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Draggable from 'react-draggable';
 import sanitize from '../utils/ftfy_profanity';
 
 const Wrapper = styled.div`
 	position: relative;	
-	min-height: 150px;
+	min-height: 140px;
  	background:#FFF;
 	width: 100%;
 	margin-bottom: 10px;
@@ -42,6 +41,7 @@ const DragHandle = styled.strong`
 
 const VoteResult = styled.div`
 	color: ${({ negative }) => negative ? 'red': 'inherit'}; 
+	margin: 0px 3px;
 `;
 
 const InputTextArea = styled.textarea`
@@ -69,32 +69,30 @@ class Card extends Component {
 
 	render() {
 
-		const {id, handleStop, handleDrag, removeCard, toggleFavourite, favourite, vote = 0, addVote, value} = this.props;
+		const {id, removeCard, toggleFavourite, favourite, vote = 0, addVote} = this.props;
 
 		const { text } = this.state;
 
 		return (
-			<Draggable id={id} onStop={handleStop} onDrag={handleDrag} bounds="body" handle="strong" >			
-					<Wrapper>
-						<HeaderBar>
-							<ButtonGroup style={{ left: '0px' }}>
-								<button className='btn btn-outline-dark material-icons'
-									onClick={toggleFavourite}
-								>
-									{favourite === true ? 'favorite' : 'favorite_border'}
-								</button>
-							</ButtonGroup>
-							<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
-							<ButtonGroup style={{ right: '0px' }}>
-								<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
-								<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
-								<VoteResult negative={Math.sign(vote)}>{vote}</VoteResult>
-								<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
-							</ButtonGroup>						
-						</HeaderBar>					
-						<InputTextArea value={text} onChange={this.handleChange} rows={3} />
-					</Wrapper>
-			</Draggable>
+			<Wrapper>
+				<HeaderBar>
+					<ButtonGroup style={{ left: '0px' }}>
+						<button className='btn btn-outline-dark material-icons'
+							onClick={toggleFavourite}
+						>
+							{favourite === true ? 'favorite' : 'favorite_border'}
+						</button>
+					</ButtonGroup>
+					<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
+					<ButtonGroup style={{ right: '0px' }}>
+						<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
+						<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
+						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>
+						<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
+					</ButtonGroup>						
+				</HeaderBar>					
+				<InputTextArea value={text} onChange={this.handleChange} rows={3} />
+			</Wrapper>
 		);
 	}
 	

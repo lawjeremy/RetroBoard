@@ -29,3 +29,5 @@ Board
 -only good browsers
 --has link to real browser, get help
 
+## Coming soon
+* React-beautiful-dnd will have support for combining cards soom! See [issue 511](https://github.com/atlassian/react-beautiful-dnd/issues/511).
