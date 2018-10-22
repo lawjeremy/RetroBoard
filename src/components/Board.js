@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Card from './Card';
 import sanitize from '../utils/ftfy_profanity';
+import { fetch, save } from './data/comment';
 
 const Wrapper = styled.div`
 	display: flex;
@@ -112,6 +113,13 @@ export default class Board extends React.PureComponent {
 			counter: 6,
 		}
 	}	
+
+	async componentDidMount(){
+		const comments = await fetch();
+		comments.map((comment) => {
+			this.addCard(1, comment.text)();
+		});
+	}
 	
 	onDragEnd = result => {
         const { source, destination } = result;
