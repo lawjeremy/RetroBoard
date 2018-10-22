@@ -1,4 +1,4 @@
-Wish List for RetroBoard
+## Wish List for RetroBoard
 
 Commenting
 -Upvote
