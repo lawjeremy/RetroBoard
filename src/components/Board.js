@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Card from './Card';
 import sanitize from '../utils/ftfy_profanity';
-import { fetch, save } from './data/comment';
+import { fetch, save } from '../data/comment';
 
 const Wrapper = styled.div`
 	display: flex;
@@ -28,7 +28,6 @@ const AddCardButton = styled.button`
 		margin-left: 5px;
 	}
 `;
-
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     // change background colour if dragging

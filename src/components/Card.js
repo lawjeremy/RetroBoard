@@ -87,7 +87,7 @@ class Card extends Component {
 					<ButtonGroup style={{ right: '0px' }}>
 						<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
 						<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
-						<VoteResult negative={Math.sign(vote)}>{vote}</VoteResult>
+						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>
 						<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
 					</ButtonGroup>						
 				</HeaderBar>					
