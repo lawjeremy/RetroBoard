@@ -4,6 +4,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Card from './Card';
 import sanitize from '../utils/ftfy_profanity';
 import { fetch, save } from '../data/comment';
+import PropTypes from 'prop-types';
+import uniqid from 'uniqid';
 
 const Wrapper = styled.div`
 	display: flex;
@@ -73,6 +75,19 @@ const move = (source, destination, droppableSource, droppableDestination) => {
     return result;
 };
 
+/**
+ * Returns a default card object
+ */
+const default_Card = () => {
+	return {
+		id: uniqid(),
+		text: '',
+		votes: 0,
+		isFavourite: false,
+		comments: [],
+	};
+}
+
 export default class Board extends React.PureComponent {
 	constructor(props) {
 		super(props)
@@ -97,27 +112,77 @@ export default class Board extends React.PureComponent {
 					bkgColor: '#979B8D',
 				},
 			],
-			list1: [
-				{ id: 0, text: "Test A"},
-				{ id: 1, text: "Test B"}		
-			],
-			list2: [
-				{ id: 2, text: "Test C"},
-				{ id: 3, text: "Test D"},		
-			],
-			list3: [
-				{ id: 4, text: "Test E"},
-				{ id: 5, text: "Test F"},		
-			],
+			list1: [],
+			list2: [],
+			list3: [],
 			counter: 6,
 		}
 	}	
 
+	static propTypes = {
+		/* describes the board and its vertical columns */
+		meta: PropTypes.shape({
+			board_id: PropTypes.string.isRequired,	// unique-id of board
+			board_name: PropTypes.string,
+			lists: PropTypes.arrayOf(
+				PropTypes.shape({
+					droppableId: PropTypes.string,	// local id to assign to "column"
+					listId: PropTypes.string,		// name of list in state
+					title: PropTypes.string.isRequired,	// title of "column"
+					bkgColor: PropTypes.string,		// hex colour for background of "column"
+				})
+			)
+		}),
+		/* describes the list of Card contents */
+		content: PropTypes.arrayOf(
+			PropTypes.shape({
+				id: PropTypes.string.isRequired,	// unique-id of content (card) item
+				text: PropTypes.string,				// card text
+				votes: PropTypes.number,			// vote score
+				isFavourite: PropTypes.bool,		// is favourite?
+				commentsRef: PropTypes.arrayOf({	// an array of comments refs
+					id: PropTypes.string,
+				}),
+				createDate: PropTypes.instanceOf(Date),
+			})
+		),
+		/* describes the list of comments that are attached to Cards */
+		comments: PropTypes.arrayOf(				// array of comments objects
+			PropTypes.shape({
+				id: PropTypes.string.isRequired,
+				text: PropTypes.string,
+				createDate: PropTypes.instanceOf(Date),
+			})
+		),											
+	}
+
 	async componentDidMount(){
+		// stub: test data!
+		this.addCard(this.state.lists[0].droppableId);
+		this.addCard(this.state.lists[0].droppableId);
+		this.addCard(this.state.lists[1].droppableId);
+		this.addCard(this.state.lists[1].droppableId);
+		this.addCard(this.state.lists[2].droppableId);
+		this.addCard(this.state.lists[2].droppableId);		
+
+		// for live data:
+		/*
+		props.content filtered into 3 lists and then pushed on state as list1, list2, list3, etc.
+		*/
+
 		const comments = await fetch();
 		comments.map((comment) => {
 			this.addCard(1, comment.text)();
 		});
+	}
+
+	syncBoard = async () => {
+		// tood
+		// pseudo code:
+		// 1. fetch content (Cards) from back-end
+		// 		does ui and server keep track of last delta date, hash of data to do compare?
+		// 2. merge content on state with content from fetch
+		// 3. re-remder 
 	}
 	
 	onDragEnd = result => {
@@ -161,18 +226,14 @@ export default class Board extends React.PureComponent {
                 list3: result.droppable3 ? result.droppable3 : this.state.list3
             });
         }
-    };
+	};
 	
 	// pushes a card onto state
-	addCard = (droppableId) => {
+	addCard = (droppableId, card = default_Card()) => {
+		
 		this.setState(prevState => {
 			const contentCol = this.getList(prevState, droppableId).slice();
-			contentCol.push(
-				{
-					id: prevState.counter,
-					text: '',
-				}
-			);
+			contentCol.push(card);
 			return {
 				[this.droppableIds[droppableId]]: contentCol,
 				counter: prevState.counter+1,
