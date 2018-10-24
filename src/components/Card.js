@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import sanitize from '../utils/ftfy_profanity';
+import CommentsSlideOut from './CommentsSlideOut';
 
 const Wrapper = styled.div`
 	position: relative;	
-	min-height: 140px;
- 	background:#FFF;
+	min-height: 160px;
+ 	background: ${({ bkgColor }) => bkgColor};
 	width: 100%;
 	margin-bottom: 10px;
 	z-index: 0;
@@ -45,8 +46,50 @@ const VoteResult = styled.div`
 `;
 
 const InputTextArea = styled.textarea`
-	margin: 10px;
-	width: 90%;
+	width: 98%;
+	margin: 5px;
+	margin-bottom: 30px;
+`;
+
+const CommentsBlock = styled.div`
+	position: relative;
+	padding: 5px;
+	padding-top: 0px;
+`;
+
+const CommentsShowToggle = styled.div`
+	display: flex;
+	align-items: center;
+	line-height: 24px;
+	justify-content: flex-end;
+	vertical-align: middle;
+	font-size: 16px;
+
+	& > button {
+		border: none;
+	};
+`;
+
+const CommentsBubbleIcon = styled.i`
+	font-size: 16px;
+	margin-right: 0.5em;
+`;
+
+const CardTextWrapper = styled.div`
+	position: relative;
+`;
+
+const CardTextDiv = styled.div`
+	padding: 10px;
+	text-align: left;
+	height: 100%;
+`;
+
+const CardSaveButton = styled.button`
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	border: none;
 `;
 
 class Card extends Component {
@@ -55,6 +98,7 @@ class Card extends Component {
 		super(props);
 		this.state = {
 			text: props.value || '',
+			isShowComments: false,
 		}
 	}
 
@@ -67,14 +111,24 @@ class Card extends Component {
 		//TODO: Debounce and save
 	}	
 
+	handleSaveCard = (e) => {
+		this.props.finalizeCard(this.state.text);
+	}
+
+	toggleShowComments = () => {
+		this.setState( prevState => ({
+			isShowComments: !prevState.isShowComments,
+		}));
+	}
+
 	render() {
 
-		const {id, removeCard, toggleFavourite, favourite, vote = 0, addVote} = this.props;
+		const {id, removeCard, toggleFavourite, favourite, vote = 0, addVote, bkgColor, comments = [], createComment, deleteComment} = this.props;
 
-		const { text } = this.state;
+		const { text, isShowComments } = this.state;
 
 		return (
-			<Wrapper>
+			<Wrapper bkgColor={bkgColor}>
 				<HeaderBar>
 					<ButtonGroup style={{ left: '0px' }}>
 						<button className='btn btn-outline-dark material-icons'
@@ -90,8 +144,29 @@ class Card extends Component {
 						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>
 						<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
 					</ButtonGroup>						
-				</HeaderBar>					
-				<InputTextArea value={text} onChange={this.handleChange} rows={3} />
+				</HeaderBar>	
+				<CardTextWrapper>		
+				{ !this.props.value ?
+					<React.Fragment>
+						<InputTextArea value={text} onChange={this.handleChange} rows={3} />
+						
+					</React.Fragment>
+				:
+					<React.Fragment>
+						<CardTextDiv>{text}</CardTextDiv>
+						<CommentsBlock>
+							<CommentsShowToggle>
+								<button onClick={this.toggleShowComments} className='btn btn-outline-dark'>
+									<CommentsBubbleIcon className='material-icons'>{isShowComments ? 'chat_bubble' : 'chat_bubble_outline'}</CommentsBubbleIcon> 
+									<span>{comments.length}</span>
+								</button>
+							</CommentsShowToggle>
+							{isShowComments && <CommentsSlideOut comments={comments} createComment={createComment} deleteComment={deleteComment} />}
+						</CommentsBlock>
+					</React.Fragment>	
+				}				
+				</CardTextWrapper>	
+				{!this.props.value && <CardSaveButton className='btn btn-outline-dark material-icons' onClick={this.handleSaveCard}>save</CardSaveButton>}		
 			</Wrapper>
 		);
 	}
