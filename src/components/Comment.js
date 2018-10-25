@@ -10,6 +10,7 @@ const CommentDiv = styled.div`
 	background: rgba(0, 0, 0, 0.1);
 	text-align: left;
 	padding: 3px;
+	color: #fff;
 `;
 
 const DeleteLink = styled.a`

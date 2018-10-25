@@ -81,7 +81,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 const default_Card = () => {
 	return {
 		id: uniqid(),
-		text: '',
+		text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
 		votes: 0,
 		isFavourite: false,
 		comments: [],
@@ -97,19 +97,19 @@ export default class Board extends React.PureComponent {
 					droppableId: 'droppable1',
 					listId: 'list1',
 					title: 'To Do', 
-					bkgColor: "#EFD0CA"
+					bkgColor: "#744253"
 				},
 				{
 					droppableId: 'droppable2',
 					listId: 'list2',
 					title: 'In Progress',
-					bkgColor: '#C1BCAC',
+					bkgColor: '#111D13',
 				},
 				{
 					droppableId: 'droppable3',
 					listId: 'list3',
 					title: 'Done',
-					bkgColor: '#979B8D',
+					bkgColor: '#465775',
 				},
 			],
 			list1: [],
@@ -269,7 +269,6 @@ export default class Board extends React.PureComponent {
 	}
 
 	finalizeCard = id => text => {
-		console.log('fin', text);
 		this.setState(prevState => ({
 			list1: prevState.list1.map(item => ({ ...item, text: item.id === id ? text : item.text })),
 			list2: prevState.list2.map(item => ({ ...item, text: item.id === id ? text : item.text })),
