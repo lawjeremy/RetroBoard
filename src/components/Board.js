@@ -43,7 +43,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const getListStyle = (bkgColor, isDraggingOver) => ({
 	border: `2px solid ${isDraggingOver ? 'black' : 'transparent'}`,
-	background: bkgColor ? bkgColor : 'transparent',
+	background: '#FFF',
 	width: 500,
 	padding: 5,
 	height: '100vh',
@@ -82,7 +82,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 const default_Card = () => {
 	return {
 		id: uniqid(),
-		text: '',
+		text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
 		votes: 0,
 		isFavourite: false,
 		comments: [],
@@ -98,19 +98,19 @@ class Board extends React.PureComponent {
 					droppableId: 'droppable1',
 					listId: 'list1',
 					title: 'To Do', 
-					bkgColor: "#EFD0CA"
+					bkgColor: "#744253"
 				},
 				{
 					droppableId: 'droppable2',
 					listId: 'list2',
 					title: 'In Progress',
-					bkgColor: '#C1BCAC',
+					bkgColor: '#111D13',
 				},
 				{
 					droppableId: 'droppable3',
 					listId: 'list3',
 					title: 'Done',
-					bkgColor: '#979B8D',
+					bkgColor: '#465775',
 				},
 			],
 			list1: [],
@@ -228,6 +228,23 @@ class Board extends React.PureComponent {
             });
         }
 	};
+
+	// pushes a comment onto a Card
+	// existing state & comment list is cloned, with comment added.
+	createComment = card_id => (id, text) => {
+		this.setState(prevState => ({
+			list1: prevState.list1.map(item => ({ ...item, comments: item.id === card_id ? [...item.comments, { id, text }] : item.comments.slice() })),
+			list2: prevState.list2.map(item => ({ ...item, comments: item.id === card_id ? [...item.comments, { id, text }] : item.comments.slice() })),
+			list3: prevState.list3.map(item => ({ ...item, comments: item.id === card_id ? [...item.comments, { id, text }] : item.comments.slice() })),
+		}));
+	}
+	deleteComment = card_id => id => {
+		this.setState(prevState => ({
+			list1: prevState.list1.map(item => ({ ...item, comments: item.id === card_id ? item.comments.filter(elem => elem.id !== id) : item.comments.slice() })),
+			list2: prevState.list2.map(item => ({ ...item, comments: item.id === card_id ? item.comments.filter(elem => elem.id !== id) : item.comments.slice() })),
+			list3: prevState.list3.map(item => ({ ...item, comments: item.id === card_id ? item.comments.filter(elem => elem.id !== id) : item.comments.slice() })),
+		}));
+	}
 	
 	// pushes a card onto state
 	addCard = (droppableId, card = default_Card()) => {
@@ -249,6 +266,14 @@ class Board extends React.PureComponent {
 			list1: prevState.list1.filter(item => item.id !== id),
 			list2: prevState.list2.filter(item => item.id !== id),
 			list3: prevState.list3.filter(item => item.id !== id),
+		}));
+	}
+
+	finalizeCard = id => text => {
+		this.setState(prevState => ({
+			list1: prevState.list1.map(item => ({ ...item, text: item.id === id ? text : item.text })),
+			list2: prevState.list2.map(item => ({ ...item, text: item.id === id ? text : item.text })),
+			list3: prevState.list3.map(item => ({ ...item, text: item.id === id ? text : item.text })),
 		}));
 	}
 
@@ -332,11 +357,16 @@ class Board extends React.PureComponent {
 														value={item.text}
 														removeCard={this.removeCard(item.id)}
 														handleChange={this.handleChange(item.id)} 
+														finalizeCard={this.finalizeCard(item.id)}
 														toggleFavourite={this.toggleFavourite(item.id)}
 														favourite={item.favourite}
 														vote={item.vote}
 														socket={socket}
 														addVote={this.addVote(item.id)}
+														bkgColor={list.bkgColor}
+														createComment={this.createComment(item.id)}
+														deleteComment={this.deleteComment(item.id)}
+														comments={item.comments}
 													/>
 												</div>
 											)}
