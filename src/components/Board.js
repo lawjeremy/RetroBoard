@@ -1,4 +1,5 @@
 import React from 'react';
+import { socketConnect } from 'socket.io-react';
 import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Card from './Card';
@@ -88,7 +89,7 @@ const default_Card = () => {
 	};
 }
 
-export default class Board extends React.PureComponent {
+class Board extends React.PureComponent {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -314,7 +315,8 @@ export default class Board extends React.PureComponent {
 	render() {
 
 		const { lists } = this.state; 
-
+		const { socket } = this.props;
+		
 		return (
 			<Wrapper>
 			<DragDropContext onDragEnd={this.onDragEnd}>
@@ -359,6 +361,7 @@ export default class Board extends React.PureComponent {
 														toggleFavourite={this.toggleFavourite(item.id)}
 														favourite={item.favourite}
 														vote={item.vote}
+														socket={socket}
 														addVote={this.addVote(item.id)}
 														bkgColor={list.bkgColor}
 														createComment={this.createComment(item.id)}
@@ -380,4 +383,6 @@ export default class Board extends React.PureComponent {
 		);
 	}
 };
+
+export default socketConnect(Board);
 

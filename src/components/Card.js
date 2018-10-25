@@ -163,6 +163,7 @@ class Card extends Component {
 
 	handleChange = (e) => {
 		const newValue = sanitize(e.target.value);
+		this.props.socket.emit('message', newValue);
 		this.setState({
 			text: newValue,
 		});
