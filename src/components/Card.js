@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import sanitize from '../utils/ftfy_profanity';
+import CommentsSlideOut from './CommentsSlideOut';
 
 const Wrapper = styled.div`
+	display: flex;
+	flex-direction: column;
 	position: relative;	
-	min-height: 140px;
- 	background:#FFF;
+	min-height: 160px;
+ 	background: ${({ bkgColor }) => bkgColor};
 	width: 100%;
 	margin-bottom: 10px;
 	z-index: 0;
@@ -18,8 +22,6 @@ const Wrapper = styled.div`
 
 const ButtonGroup = styled.div`
 	display: inline-flex;
-	position: absolute;
-	top: 0px;
 	border: none;
 	line-height: 38px;
 	vertical-align: top;
@@ -30,9 +32,12 @@ const ButtonGroup = styled.div`
 `;
 
 const HeaderBar = styled.div`
-	display: block;
+	display: flex;
+	justify-content: space-between;
 	line-height: 38px;
-	background-color: #DCDCDC;
+	background-color: transparent;
+	color: #fff;
+	padding: 5px;
 `;
 
 const DragHandle = styled.strong`
@@ -45,8 +50,70 @@ const VoteResult = styled.div`
 `;
 
 const InputTextArea = styled.textarea`
-	margin: 10px;
-	width: 90%;
+	padding: 0.5em;
+	opacity: 0.8;
+`;
+
+const CardBottom = styled.div`
+	position: relative;
+	padding: 5px;
+`;
+
+const BottomToggle = styled.div`
+	display: flex;
+	line-height: 24px;
+	justify-content: space-between;
+	vertical-align: middle;
+	font-size: 16px;
+
+	& > button {
+		border: none;
+	};
+`;
+
+const CommentsBubbleIcon = styled.i`
+	font-size: 16px;
+	margin-right: 0.5em;
+`;
+
+const CardTextWrapper = styled.div`
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	flex-grow: 1;
+`;
+
+const CardTextDiv = styled.div`
+	padding: 0.5em;
+	text-align: left;
+	flex-grow: 1;
+	padding-right: 3em;
+	background: rgba(0,0,0,0.1);
+	min-height: 90px;
+	color: #fff;
+`;
+
+const CardSaveButton = styled.button`
+	border: none;
+`;
+
+const EditLink = styled.a`
+	font-size: 21px;
+	color: #fff;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+
+	&:hover {
+		color: rgba(0,0,0,0.5);
+		text-decoration: none;
+	};
+
+	&:focus {
+		color: rgba(0,0,0,0.5);
+		text-decoration: none;
+	};
 `;
 
 class Card extends Component {
@@ -55,8 +122,44 @@ class Card extends Component {
 		super(props);
 		this.state = {
 			text: props.value || '',
+			isShowComments: false,
+			isEditable: props.value ? false : true,
 		}
 	}
+
+	static propTypes = {
+		id: PropTypes.string,
+		bkgColor: PropTypes.string,
+		favourite: PropTypes.bool,
+		vote: PropTypes.number,
+		toggleFavourite: PropTypes.func,
+		addVote: PropTypes.func,
+		comments: PropTypes.arrayOf(PropTypes.object),
+		createComment: PropTypes.func,
+		deleteComment: PropTypes.func,
+		removeCard: PropTypes.func,
+		isEditable: PropTypes.bool,
+	}
+
+	static defaultProps = {
+		vote: 0,
+		comments: [],
+		favourite: false,
+		isEditable: true,
+	};
+
+	/*
+	static getDerivedStateFromProps(nextProps, prevState) {
+		console.log('in dervied', nextProps);
+		if (prevState.isEditable !== nextProps.isEditable) {
+			return {
+				isEditable: nextProps.isEditable
+			};
+		}
+	
+		// Return null to indicate no change to state.
+		return null;
+	}*/
 
 	handleChange = (e) => {
 		const newValue = sanitize(e.target.value);
@@ -67,31 +170,75 @@ class Card extends Component {
 		//TODO: Debounce and save
 	}	
 
+	handleSaveCard = (e) => {
+		console.log('saving');
+		this.props.finalizeCard(this.state.text);
+		this.setState({
+			isEditable: false,
+		});
+	}
+
+	toggleShowComments = () => {
+		this.setState( prevState => ({
+			isShowComments: !prevState.isShowComments,
+		}));
+	}
+
+	handleEditLinkClick = e => {
+		e.preventDefault();
+		this.setState({
+			isEditable: true,
+		});
+	}
+
 	render() {
 
-		const {id, removeCard, toggleFavourite, favourite, vote = 0, addVote} = this.props;
+		const {id, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
 
-		const { text } = this.state;
+		const { text, isShowComments, isEditable } = this.state;
 
 		return (
-			<Wrapper>
+			<Wrapper bkgColor={bkgColor}>
 				<HeaderBar>
-					<ButtonGroup style={{ left: '0px' }}>
-						<button className='btn btn-outline-dark material-icons'
+					<ButtonGroup>
+						<button className='btn btn-outline-light material-icons'
 							onClick={toggleFavourite}
 						>
 							{favourite === true ? 'favorite' : 'favorite_border'}
 						</button>
 					</ButtonGroup>
 					<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
-					<ButtonGroup style={{ right: '0px' }}>
-						<button className='btn btn-outline-dark material-icons' onClick={() => addVote(1)}>thumb_up</button>
-						<button className='btn btn-outline-dark material-icons' onClick={() => addVote(-1)}>thumb_down</button>
+					<ButtonGroup>
+						<button className='btn btn-outline-light material-icons' onClick={() => addVote(1)}>thumb_up</button>
+						<button className='btn btn-outline-light material-icons' onClick={() => addVote(-1)}>thumb_down</button>
 						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>
-						<button className='btn btn-outline-dark material-icons' onClick={removeCard}>clear</button>
+						<button className='btn btn-outline-light material-icons' onClick={removeCard}>clear</button>
 					</ButtonGroup>						
-				</HeaderBar>					
-				<InputTextArea value={text} onChange={this.handleChange} rows={3} />
+				</HeaderBar>	
+				<CardTextWrapper>		
+					{isEditable ? <InputTextArea value={text} onChange={this.handleChange} rows={3} /> 
+						: 
+					<CardTextDiv>
+						{text}
+						<EditLink 
+							href='' 
+							className='material-icons'
+							onClick={this.handleEditLinkClick}
+						>
+							edit
+						</EditLink>
+					</CardTextDiv>}						
+					<CardBottom>
+						<BottomToggle>
+							{isEditable ? <CardSaveButton className='btn btn-outline-light material-icons' onClick={this.handleSaveCard}>save</CardSaveButton> : <div></div>	}
+							{!isEditable ? <button onClick={this.toggleShowComments} className='btn btn-outline-light'>
+								<CommentsBubbleIcon className='material-icons'>{isShowComments ? 'chat_bubble' : 'chat_bubble_outline'}</CommentsBubbleIcon> 
+								<span>{comments.length}</span>
+							</button> : <div></div>}
+						</BottomToggle>
+						{isShowComments && <CommentsSlideOut comments={comments} createComment={createComment} deleteComment={deleteComment} />}
+					</CardBottom>
+				</CardTextWrapper>					
 			</Wrapper>
 		);
 	}
