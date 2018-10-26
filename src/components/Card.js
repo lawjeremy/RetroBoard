@@ -194,10 +194,10 @@ class Card extends Component {
 
 	render() {
 
-		const {id, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
+		const {id, title, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
 
 		const { text, isShowComments, isEditable } = this.state;
-
+		console.log(title);
 		return (
 			<Wrapper bkgColor={bkgColor}>
 				<HeaderBar>
@@ -208,7 +208,7 @@ class Card extends Component {
 							{favourite === true ? 'favorite' : 'favorite_border'}
 						</button>
 					</ButtonGroup>
-					<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
+					<DragHandle className="cursor"><div>{title}</div></DragHandle>
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons' onClick={() => addVote(1)}>thumb_up</button>
 						<button className='btn btn-outline-light material-icons' onClick={() => addVote(-1)}>thumb_down</button>
