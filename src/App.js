@@ -5,6 +5,8 @@ import logo from './logo.svg';
 import './App.css';
 import styled from 'styled-components';
 import Board from './components/Board';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 const Wrapper = styled.div`
 	min-height: 100vh;
@@ -22,7 +24,9 @@ class App extends Component {
 		return (
 			<SocketProvider socket={socket}>
 				<Wrapper className="App">   
+					<Header/>
 					<Board />
+					<Footer/>
 				</Wrapper>
 			</SocketProvider>
 		);
