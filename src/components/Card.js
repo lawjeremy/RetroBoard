@@ -162,8 +162,15 @@ class Card extends Component {
 	}*/
 
 	handleChange = (e) => {
+
+		const { id } = this.props;
+
 		const newValue = sanitize(e.target.value);
-		this.props.socket.emit('message', newValue);
+		
+		this.props.socket.emit('message', {
+			text: newValue,
+			id
+		});
 		this.setState({
 			text: newValue,
 		});
@@ -172,8 +179,15 @@ class Card extends Component {
 	}	
 
 	handleSaveCard = (e) => {
-		console.log('saving');
-		this.props.finalizeCard(this.state.text);
+		const { id, listId } = this.props;
+		const { text } = this.state;
+
+		this.props.finalizeCard(text);
+		this.props.socket.emit('save', {
+			text,
+			id,
+			listId
+		});
 		this.setState({
 			isEditable: false,
 		});

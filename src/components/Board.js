@@ -90,7 +90,8 @@ const default_Card = () => {
 
 class Board extends React.PureComponent {
 	constructor(props) {
-		super(props)
+		super(props);
+		
 		this.state = {
 			lists: [
 				{
@@ -117,6 +118,7 @@ class Board extends React.PureComponent {
 			list3: [],
 			counter: 6,
 		}
+
 	}	
 
 	static propTypes = {
@@ -157,23 +159,41 @@ class Board extends React.PureComponent {
 	}
 
 	async componentDidMount(){
+
+		const { socket } = this.props;
+
 		// stub: test data!
-		this.addCard(this.state.lists[0].droppableId);
-		this.addCard(this.state.lists[0].droppableId);
-		this.addCard(this.state.lists[1].droppableId);
-		this.addCard(this.state.lists[1].droppableId);
-		this.addCard(this.state.lists[2].droppableId);
-		this.addCard(this.state.lists[2].droppableId);		
+		// this.addCard(this.state.lists[0].droppableId);
+		// this.addCard(this.state.lists[0].droppableId);
+		// this.addCard(this.state.lists[1].droppableId);
+		// this.addCard(this.state.lists[1].droppableId);
+		// this.addCard(this.state.lists[2].droppableId);
+		// this.addCard(this.state.lists[2].droppableId);		
 
 		// for live data:
 		/*
 		props.content filtered into 3 lists and then pushed on state as list1, list2, list3, etc.
 		*/
+		let lists = {list1: [], list2: [], list3: []};
 
-		const comments = await fetch();
-		comments.map((comment) => {
-			this.addCard(1, comment.text)();
+		socket.on('connected', (cards) => {
+			cards.map((card) => {
+				if(card.id){
+					lists[card.listId].push(card);
+					console.log(card);
+				}
+			});
+			this.setState({
+				list1: lists.list1,
+				list2: lists.list2,
+				list3: lists.list3
+			});
 		});
+
+		socket.on('message return', (msg) => {
+			console.log(msg);
+		});
+
 	}
 
 	syncBoard = async () => {
@@ -353,6 +373,7 @@ class Board extends React.PureComponent {
 												>
 													<Card 
 														id={item.id}
+														listId={list.listId}
 														value={item.text}
 														removeCard={this.removeCard(item.id)}
 														handleChange={this.handleChange(item.id)} 
