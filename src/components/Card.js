@@ -162,8 +162,15 @@ class Card extends Component {
 	}*/
 
 	handleChange = (e) => {
+
+		const { id } = this.props;
+
 		const newValue = sanitize(e.target.value);
-		this.props.socket.emit('message', newValue);
+		
+		this.props.socket.emit('message', {
+			text: newValue,
+			id
+		});
 		this.setState({
 			text: newValue,
 		});
@@ -172,8 +179,15 @@ class Card extends Component {
 	}	
 
 	handleSaveCard = (e) => {
-		console.log('saving');
-		this.props.finalizeCard(this.state.text);
+		const { id, listId } = this.props;
+		const { text } = this.state;
+
+		this.props.finalizeCard(text);
+		this.props.socket.emit('save', {
+			text,
+			id,
+			listId
+		});
 		this.setState({
 			isEditable: false,
 		});
@@ -194,10 +208,10 @@ class Card extends Component {
 
 	render() {
 
-		const {id, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
+		const {id, title, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
 
 		const { text, isShowComments, isEditable } = this.state;
-
+		console.log(title);
 		return (
 			<Wrapper bkgColor={bkgColor}>
 				<HeaderBar>
@@ -209,7 +223,7 @@ class Card extends Component {
 							{favourite === true ? 'star' : 'star_border'}
 						</button>
 					</ButtonGroup>
-					<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
+					<DragHandle className="cursor"><div>{title}</div></DragHandle>
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons' onClick={() => addVote(1)}>thumb_up</button>
 						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>

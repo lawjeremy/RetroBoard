@@ -46,10 +46,9 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const getListStyle = (bkgColor, isDraggingOver) => ({
 	border: `2px solid ${isDraggingOver ? 'black' : 'transparent'}`,
-	background: '#FBF5F3',
+	// background: '#FFF',
 	width: 500,
 	padding: 5,
-	minHeight: '100vh',
 });
 
 // refactor
@@ -94,25 +93,26 @@ const default_Card = () => {
 
 class Board extends React.PureComponent {
 	constructor(props) {
-		super(props)
+		super(props);
+		
 		this.state = {
 			lists: [
 				{
 					droppableId: 'droppable1',
 					listId: 'list1',
-					title: 'To Do', 
-					bkgColor: "#744253"
+					title: 'Went Well', 
+					bkgColor: "#111D13"
 				},
 				{
 					droppableId: 'droppable2',
 					listId: 'list2',
-					title: 'In Progress',
-					bkgColor: '#111D13',
+					title: 'To Improve',
+					bkgColor: '#744253',
 				},
 				{
 					droppableId: 'droppable3',
 					listId: 'list3',
-					title: 'Done',
+					title: 'Action Items',
 					bkgColor: '#465775',
 				},
 			],
@@ -122,6 +122,7 @@ class Board extends React.PureComponent {
 			counter: 6,
 			focusLegend: false,
 		}
+
 	}	
 
 	static propTypes = {
@@ -162,23 +163,41 @@ class Board extends React.PureComponent {
 	}
 
 	async componentDidMount(){
+
+		const { socket } = this.props;
+
 		// stub: test data!
-		this.addCard(this.state.lists[0].droppableId);
-		this.addCard(this.state.lists[0].droppableId);
-		this.addCard(this.state.lists[1].droppableId);
-		this.addCard(this.state.lists[1].droppableId);
-		this.addCard(this.state.lists[2].droppableId);
-		this.addCard(this.state.lists[2].droppableId);		
+		// this.addCard(this.state.lists[0].droppableId);
+		// this.addCard(this.state.lists[0].droppableId);
+		// this.addCard(this.state.lists[1].droppableId);
+		// this.addCard(this.state.lists[1].droppableId);
+		// this.addCard(this.state.lists[2].droppableId);
+		// this.addCard(this.state.lists[2].droppableId);		
 
 		// for live data:
 		/*
 		props.content filtered into 3 lists and then pushed on state as list1, list2, list3, etc.
 		*/
+		let lists = {list1: [], list2: [], list3: []};
 
-		const comments = await fetch();
-		comments.map((comment) => {
-			this.addCard(1, comment.text)();
+		socket.on('connected', (cards) => {
+			cards.map((card) => {
+				if(card.id){
+					lists[card.listId].push(card);
+					console.log(card);
+				}
+			});
+			this.setState({
+				list1: lists.list1,
+				list2: lists.list2,
+				list3: lists.list3
+			});
 		});
+
+		socket.on('message return', (msg) => {
+			console.log(msg);
+		});
+
 	}
 
 	syncBoard = async () => {
@@ -319,7 +338,7 @@ class Board extends React.PureComponent {
 	render() {
 
 		const { lists, focusLegend } = this.state; 
-		const { socket } = this.props;
+		const { socket, userName } = this.props;
 		
 		return (
 			<Wrapper>
@@ -359,6 +378,7 @@ class Board extends React.PureComponent {
 												>
 													<Card 
 														id={item.id}
+														listId={list.listId}
 														value={item.text}
 														removeCard={this.removeCard(item.id)}
 														handleChange={this.handleChange(item.id)} 
@@ -372,6 +392,7 @@ class Board extends React.PureComponent {
 														createComment={this.createComment(item.id)}
 														deleteComment={this.deleteComment(item.id)}
 														comments={item.comments}
+														title={`${userName} says:`}
 													/>
 												</div>
 											)}
