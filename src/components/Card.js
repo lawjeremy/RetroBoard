@@ -41,7 +41,7 @@ const HeaderBar = styled.div`
 `;
 
 const DragHandle = styled.strong`
-	cursor: move !important;
+
 `;
 
 const VoteResult = styled.div`
@@ -204,22 +204,23 @@ class Card extends Component {
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons'
 							onClick={toggleFavourite}
+							title='Pin this card'
 						>
-							{favourite === true ? 'favorite' : 'favorite_border'}
+							{favourite === true ? 'star' : 'star_border'}
 						</button>
 					</ButtonGroup>
 					<DragHandle className="cursor"><div>Card # {id}</div></DragHandle>
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons' onClick={() => addVote(1)}>thumb_up</button>
-						<button className='btn btn-outline-light material-icons' onClick={() => addVote(-1)}>thumb_down</button>
 						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>
+						<button className='btn btn-outline-light material-icons' onClick={() => addVote(-1)}>thumb_down</button>
 						<button className='btn btn-outline-light material-icons' onClick={removeCard}>clear</button>
 					</ButtonGroup>						
 				</HeaderBar>	
 				<CardTextWrapper>		
 					{isEditable ? <InputTextArea value={text} onChange={this.handleChange} rows={3} /> 
 						: 
-					<CardTextDiv>
+					<CardTextDiv onDoubleClick={this.handleEditLinkClick}>
 						{text}
 						<EditLink 
 							href='' 
