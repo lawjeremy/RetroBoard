@@ -20,8 +20,8 @@ const Wrapper = styled.div`
 const socket = io.connect('35.182.139.132:3000');
 
 const genTitle = () => {
-	const titles = ['DJ', 'Señor', 'Sir', 'Sire', 'Your Grace', 'Master', 'The Honorable', 'Doctor', 'Captain', 'Colonel', 'Madam', 'Princess', 'Prince', 'Humperdink', 'Mayor']
-	const rand = Math.floor( Math.random() * 15 );
+	const titles = ['DJ', 'Señor', 'Sir', 'Sire', 'Your Grace', 'Master', 'The Honorable', 'Doctor', 'Captain', 'Colonel', 'Madam', 'Princess', 'Prince', 'Humperdink', 'Mayor', 'Security Chief', 'Darth', 'First Officer', 'Sheriff', 'Coach']
+	const rand = Math.floor( Math.random() * 20 );
 	return titles[rand];
 };
 
