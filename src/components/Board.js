@@ -280,7 +280,12 @@ class Board extends React.PureComponent {
 
 	// returns new state that has Card with id removed.
 	// todo: dynamic lists/ columns?
-	removeCard = id => () => {		
+	removeCard = id => () => {
+
+		const { socket } = this.props;
+
+		socket.emit('remove', id);
+
 		this.setState(prevState => ({
 			list1: prevState.list1.filter(item => item.id !== id),
 			list2: prevState.list2.filter(item => item.id !== id),
