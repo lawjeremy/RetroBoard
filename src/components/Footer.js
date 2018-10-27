@@ -4,8 +4,10 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
     display: block;
-    height: 40px;
-    background-color: red;
+    min-height: 2em;
+    background-color: #364156;
+    color: white;
+    margin-top: auto;
 `;
 
 const Footer = () => {

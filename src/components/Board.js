@@ -43,10 +43,9 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const getListStyle = (bkgColor, isDraggingOver) => ({
 	border: `2px solid ${isDraggingOver ? 'black' : 'transparent'}`,
-	background: '#FFF',
+	// background: '#FFF',
 	width: 500,
 	padding: 5,
-	height: '100vh',
 });
 
 // refactor
@@ -98,19 +97,19 @@ class Board extends React.PureComponent {
 				{
 					droppableId: 'droppable1',
 					listId: 'list1',
-					title: 'To Do', 
-					bkgColor: "#744253"
+					title: 'Went Well', 
+					bkgColor: "#111D13"
 				},
 				{
 					droppableId: 'droppable2',
 					listId: 'list2',
-					title: 'In Progress',
-					bkgColor: '#111D13',
+					title: 'To Improve',
+					bkgColor: '#744253',
 				},
 				{
 					droppableId: 'droppable3',
 					listId: 'list3',
-					title: 'Done',
+					title: 'Action Items',
 					bkgColor: '#465775',
 				},
 			],
@@ -335,7 +334,7 @@ class Board extends React.PureComponent {
 	render() {
 
 		const { lists } = this.state; 
-		const { socket } = this.props;
+		const { socket, userName } = this.props;
 		
 		return (
 			<Wrapper>
@@ -388,6 +387,7 @@ class Board extends React.PureComponent {
 														createComment={this.createComment(item.id)}
 														deleteComment={this.deleteComment(item.id)}
 														comments={item.comments}
+														title={`${userName} says:`}
 													/>
 												</div>
 											)}

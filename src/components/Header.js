@@ -2,20 +2,27 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-    display: block;
-    height: 40px;
-    background-color: blue;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	height: 40px;
+	background-color: #420039;
+	color: white;
 `;
 
-const Icon = styled.i`
-
+const SettingButton = styled.button`
+    padding: 5px 10px;
+	border: none;
+	margin: 0 0.5em 0 1em;
+	font-size: 1.2em;
 `;
 
-
-
-const Header = () => {
+const Header = ({ userName }) => {
 	return (		
-        <Wrapper>header</Wrapper>
+		<Wrapper>
+			<div>{userName}</div>
+			<SettingButton className='btn btn-outline-light material-icons'>settings</SettingButton>
+		</Wrapper>
 	);
 };
 
