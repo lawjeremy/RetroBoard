@@ -162,8 +162,15 @@ class Card extends Component {
 	}*/
 
 	handleChange = (e) => {
+
+		const { id } = this.props;
+
 		const newValue = sanitize(e.target.value);
-		this.props.socket.emit('message', newValue);
+		
+		this.props.socket.emit('message', {
+			text: newValue,
+			id
+		});
 		this.setState({
 			text: newValue,
 		});
@@ -199,7 +206,7 @@ class Card extends Component {
 		const { text, isShowComments, isEditable } = this.state;
 
 		return (
-			<Wrapper bkgColor={bkgColor}>
+			<Wrapper bkgColor={bkgColor} ref={ref}>
 				<HeaderBar>
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons'

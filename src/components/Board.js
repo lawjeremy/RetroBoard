@@ -91,7 +91,8 @@ const default_Card = () => {
 
 class Board extends React.PureComponent {
 	constructor(props) {
-		super(props)
+		super(props);
+		
 		this.state = {
 			lists: [
 				{
@@ -118,6 +119,7 @@ class Board extends React.PureComponent {
 			list3: [],
 			counter: 6,
 		}
+
 	}	
 
 	static propTypes = {
@@ -158,6 +160,9 @@ class Board extends React.PureComponent {
 	}
 
 	async componentDidMount(){
+
+		const { socket } = this.props;
+
 		// stub: test data!
 		this.addCard(this.state.lists[0].droppableId);
 		this.addCard(this.state.lists[0].droppableId);
@@ -175,6 +180,11 @@ class Board extends React.PureComponent {
 		comments.map((comment) => {
 			this.addCard(1, comment.text)();
 		});
+
+		socket.on('message return', (msg) => {
+			
+		});
+
 	}
 
 	syncBoard = async () => {

@@ -12,9 +12,7 @@ const Wrapper = styled.div`
 `;
 
 const socket = io.connect('35.182.139.132:3000');
-socket.on('message', msg => console.log(msg));
 socket.on('connected', msg => console.log(msg));
-socket.on('message return', msg => console.log(msg));
 
 class App extends Component {
 
