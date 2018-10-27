@@ -179,8 +179,15 @@ class Card extends Component {
 	}	
 
 	handleSaveCard = (e) => {
-		console.log('saving');
-		this.props.finalizeCard(this.state.text);
+		const { id, listId } = this.props;
+		const { text } = this.state;
+
+		this.props.finalizeCard(text);
+		this.props.socket.emit('save', {
+			text,
+			id,
+			listId
+		});
 		this.setState({
 			isEditable: false,
 		});
@@ -206,7 +213,7 @@ class Card extends Component {
 		const { text, isShowComments, isEditable } = this.state;
 
 		return (
-			<Wrapper bkgColor={bkgColor} ref={ref}>
+			<Wrapper bkgColor={bkgColor}>
 				<HeaderBar>
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons'

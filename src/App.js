@@ -14,7 +14,6 @@ const Wrapper = styled.div`
 `;
 
 const socket = io.connect('35.182.139.132:3000');
-socket.on('connected', msg => console.log(msg));
 
 class App extends Component {
 
