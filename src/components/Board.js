@@ -7,11 +7,14 @@ import sanitize from '../utils/ftfy_profanity';
 import { fetch, save } from '../data/comment';
 import PropTypes from 'prop-types';
 import uniqid from 'uniqid';
+import LegendSlideOut from './LegendSlideOut';
 
 const Wrapper = styled.div`
 	display: flex;
 	justify-content: center;
 	flex-direction: row;
+	background: #FBF5F3;
+	position: relative;
 `;
 
 const Ruler = styled.hr`
@@ -117,6 +120,7 @@ class Board extends React.PureComponent {
 			list2: [],
 			list3: [],
 			counter: 6,
+			focusLegend: false,
 		}
 
 	}	
@@ -338,7 +342,7 @@ class Board extends React.PureComponent {
 	
 	render() {
 
-		const { lists } = this.state; 
+		const { lists, focusLegend } = this.state; 
 		const { socket, userName } = this.props;
 		
 		return (
@@ -365,7 +369,8 @@ class Board extends React.PureComponent {
 										<Draggable
 											key={item.id}
 											draggableId={item.id}
-											index={index}>
+											index={index}
+											isDragDisabled={item.favourite}>
 											{(provided, snapshot) => (
 												<div
 													ref={provided.innerRef}														
@@ -405,6 +410,7 @@ class Board extends React.PureComponent {
 					</Droppable>
 				))}
 			</DragDropContext>
+			<LegendSlideOut />
 			</Wrapper>
 		);
 	}
