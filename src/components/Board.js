@@ -13,8 +13,8 @@ const Wrapper = styled.div`
 	display: flex;
 	justify-content: center;
 	flex-direction: row;
-	background: #FBF5F3;
 	position: relative;
+	margin-top: 80px;
 `;
 
 const Ruler = styled.hr`

@@ -8,7 +8,6 @@ const Wrapper = styled.div`
     justify-content: flex-start;
     min-height: 100vh;
     padding: 10px;
-    background-color: ${({ bkgColor }) => bkgColor};
     border: 2px solid ${({ highlight }) => highlight ? 'black' : 'transparent'};
 `;
 
@@ -18,7 +17,7 @@ const Ruler = styled.hr`
 
 const CardColumn = ({children, id, label, bkgColor, highlight}) => {
     return (
-        <Wrapper id={id} bkgColor={bkgColor} highlight={highlight}>
+        <Wrapper id={id} highlight={highlight}>
             <h2 className="display-3">{label}</h2>
             <Ruler className="my-4" />
             {children}
