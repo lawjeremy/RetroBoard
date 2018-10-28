@@ -211,7 +211,7 @@ class Card extends Component {
 		const {id, title, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
 
 		const { text, isShowComments, isEditable } = this.state;
-		console.log(title);
+		// console.log(text);
 		return (
 			<Wrapper bkgColor={bkgColor}>
 				<HeaderBar>

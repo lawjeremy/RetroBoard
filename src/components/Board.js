@@ -120,12 +120,16 @@ class Board extends React.PureComponent {
 			list2: [],
 			list3: [],
 			counter: 6,
+			query: props.search,
 			focusLegend: false,
 		}
 
 	}	
 
 	static propTypes = {
+
+		search: PropTypes.string,
+
 		/* describes the board and its vertical columns */
 		meta: PropTypes.shape({
 			board_id: PropTypes.string.isRequired,	// unique-id of board
@@ -198,6 +202,13 @@ class Board extends React.PureComponent {
 			console.log(msg);
 		});
 
+		const cards = JSON.parse(localStorage.getItem('card')) || [];
+   		this.setState({ cards: cards, allCards: cards})
+
+	}
+
+	componentDidUpdate = (props) => {
+		this.handleSearch(props.query);
 	}
 
 	syncBoard = async () => {
@@ -330,6 +341,14 @@ class Board extends React.PureComponent {
 			list2: prevState.list2.map(item => ({ ...item, vote: item.id === id ? (item.vote ? item.vote : 0) + inc : item.vote })),
 			list3: prevState.list3.map(item => ({ ...item, vote: item.id === id ? (item.vote ? item.vote : 0) + inc : item.vote })),
 		}));
+	}
+
+	handleSearch = query => () => {
+		console.log("Our App knows the query: " + query);
+		let cards = this.state.lists.filter((list) => {
+			return list.title.includes(query) || list.body.includes(query)
+		  });
+		  this.setState({lists: cards});
 	}
 
 	droppableIds = {
