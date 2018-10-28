@@ -7,10 +7,14 @@ const CommentDiv = styled.div`
 	position: relative;
 	margin-bottom: 5px;
 	width: 100%;
-	background: rgba(0, 0, 0, 0.1);
+	background: rgba(0, 0, 0, 0.2);
 	text-align: left;
 	padding: 3px;
 	color: #fff;
+
+	&:nth-child(2n) {
+		background: rgba(0, 0, 0, 0.4);
+	}
 `;
 
 const DeleteLink = styled.a`
@@ -23,12 +27,16 @@ const DeleteLink = styled.a`
 	&:hover {
 		color: rgba(0,0,0,0.5);
 		text-decoration: none;
+
+		&+div {
+			text-decoration: underline;
+		}
 	};
 
 	&:focus {
 		color: rgba(0,0,0,0.5);
 		text-decoration: none;
-	};
+	};	
 `;
 
 const CommentInput = styled.input`	
@@ -101,8 +109,7 @@ class Comment extends React.PureComponent {
 		} else {
 			// comment has been created
 			return (
-				<CommentDiv>
-					{value}
+				<CommentDiv>					
 					<DeleteLink 
 						href='' 
 						className='material-icons'
@@ -110,6 +117,7 @@ class Comment extends React.PureComponent {
 					>
 						delete_forever
 					</DeleteLink>
+					<div>{value}</div>
 				</CommentDiv>
 			)
 		}
