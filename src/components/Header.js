@@ -46,7 +46,7 @@ export default class Header extends React.PureComponent {
 	
 	handleInputChange = (event) => {
 		const value =  event.target.value;
-		// this.props.sendQuery(value);
+		this.props.sendQuery(value);
 		this.setState({
 			query: value.substr(0,30)
 		})

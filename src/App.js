@@ -36,9 +36,6 @@ export default class App extends Component {
 		};
 	}
 
-	static propTypes = {
-		searchQuery: PropTypes.func,
-	}
 
 	componentDidMount(){
 		this.setState({
@@ -46,16 +43,15 @@ export default class App extends Component {
 		});
 	}
 
-	// getQuery(data){
-	// 	console.log(data);
-	// 	this.setState({
-	// 		query: data
-	// 	});
-	// }
+	getQuery = (data) => {
+		this.setState({
+			query: data
+		});
+	}
 
 	render() {
 		const { userName, query } = this.state
-		const { search } = this.props
+		
 		return (
 			<SocketProvider socket={socket}>
 				<Wrapper className="App">   
