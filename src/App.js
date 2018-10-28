@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { SocketProvider } from 'socket.io-react';
+import PropTypes from 'prop-types';
+
 import io from 'socket.io-client';
 import logo from './logo.svg';
 import './App.css';
@@ -25,26 +27,40 @@ const genTitle = () => {
 	return titles[rand];
 };
 
-class App extends Component {
+export default class App extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			userName: ''
+			userName: '',
+			query: '',
 		};
 	}
+
+	static propTypes = {
+		searchQuery: PropTypes.func,
+	}
+
 	componentDidMount(){
 		this.setState({
 			userName: `${genTitle()} ${randomName.last()}`
 		});
 	}
 
+	// getQuery(data){
+	// 	console.log(data);
+	// 	this.setState({
+	// 		query: data
+	// 	});
+	// }
+
 	render() {
-		const { userName } = this.state
+		const { userName, query } = this.state
+		const { search } = this.props
 		return (
 			<SocketProvider socket={socket}>
 				<Wrapper className="App">   
-					<Header userName={userName}/>
-					<Board userName={userName} style={{ flexGrow: 1 }} />
+					<Header sendQuery={this.getQuery} userName={userName}/>
+					<Board search={query} userName={userName} style={{ flexGrow: 1 }} />
 					<Footer/>
 				</Wrapper>
 			</SocketProvider>
@@ -52,4 +68,3 @@ class App extends Component {
 	}
 }
 
-export default App;
