@@ -68,6 +68,9 @@ const Li = styled.li`
 	}
 `;
 
+const Title = styled.h1`
+`;
+
 const delta = 5;
 
 export default class Header extends React.PureComponent {
@@ -174,6 +177,9 @@ export default class Header extends React.PureComponent {
 							/>
 						</form>
 					</IconWrapper>
+					<Title className='display-3'>
+						A clever title?
+					</Title>
 					<SettingsWrapper>
 						<div>{userName}</div>
 						<SettingButton className='btn btn-outline-light material-icons'>settings</SettingButton>
