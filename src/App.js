@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 	justify-content: space-between;
 	margin: 0px auto;
 	min-height: 100vh;
-	margin-top: 200px;	
+	margin-top: 100px;	
 `;
 
 const socket = io.connect('35.182.139.132:3000');
@@ -37,9 +37,6 @@ export default class App extends Component {
 		};
 	}
 
-	static propTypes = {
-		searchQuery: PropTypes.func,
-	}
 
 	componentDidMount(){
 		this.setState({
@@ -47,21 +44,20 @@ export default class App extends Component {
 		});
 	}
 
-	// getQuery(data){
-	// 	console.log(data);
-	// 	this.setState({
-	// 		query: data
-	// 	});
-	// }
+	getQuery = (data) => {
+		this.setState({
+			query: data
+		});
+	}
 
 	render() {
 		const { userName, query } = this.state
-		const { search } = this.props
+		console.log('App data: ', query)
 		return (
 			<SocketProvider socket={socket}>
 				<Header sendQuery={this.getQuery} userName={userName}/>
 				<Wrapper className="App">  					
-					<Board search={query} userName={userName} style={{ flexGrow: 1 }} />
+					<Board searchContent={query} userName={userName} style={{ flexGrow: 1 }} />
 					<Footer/>
 				</Wrapper>
 			</SocketProvider>

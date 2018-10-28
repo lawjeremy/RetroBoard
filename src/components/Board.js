@@ -120,7 +120,7 @@ class Board extends React.PureComponent {
 			list2: [],
 			list3: [],
 			counter: 6,
-			query: props.search,
+			query: this.props.searchContent ? this.props.searchContent : '',
 			focusLegend: false,
 		}
 
@@ -128,7 +128,7 @@ class Board extends React.PureComponent {
 
 	static propTypes = {
 
-		search: PropTypes.string,
+		searchContent: PropTypes.string,
 
 		/* describes the board and its vertical columns */
 		meta: PropTypes.shape({
@@ -168,7 +168,7 @@ class Board extends React.PureComponent {
 
 	async componentDidMount(){
 
-		const { socket } = this.props;
+		const { socket, searchContent } = this.props;
 
 		// stub: test data!
 		// this.addCard(this.state.lists[0].droppableId);
@@ -194,21 +194,20 @@ class Board extends React.PureComponent {
 			this.setState({
 				list1: lists.list1,
 				list2: lists.list2,
-				list3: lists.list3
+				list3: lists.list3,
 			});
 		});
 
 		socket.on('message return', (msg) => {
 			console.log(msg);
 		});
-
 		const cards = JSON.parse(localStorage.getItem('card')) || [];
    		this.setState({ cards: cards, allCards: cards})
 
 	}
 
 	componentDidUpdate = (props) => {
-		this.handleSearch(props.query);
+		this.handleSearch(props.searchContent);
 	}
 
 	syncBoard = async () => {
@@ -343,12 +342,12 @@ class Board extends React.PureComponent {
 		}));
 	}
 
-	handleSearch = query => () => {
-		console.log("Our App knows the query: " + query);
-		let cards = this.state.lists.filter((list) => {
-			return list.title.includes(query) || list.body.includes(query)
-		  });
-		  this.setState({lists: cards});
+	handleSearch = (data) => {
+		// console.log("Our App knows the query: " + data);
+		// let cards = this.state.lists.filter((list) => {
+		// 	return list.title.includes(query) || list.body.includes(query)
+		// });
+		// this.setState({lists: cards});
 	}
 
 	droppableIds = {

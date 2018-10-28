@@ -68,6 +68,10 @@ const Li = styled.li`
 	}
 `;
 
+const SearchInput = styled.input`
+	margin-left: 1em;
+`;
+
 const delta = 5;
 
 export default class Header extends React.PureComponent {
@@ -148,7 +152,7 @@ export default class Header extends React.PureComponent {
 	
 	handleInputChange = (event) => {
 		const value =  event.target.value;
-		// this.props.sendQuery(value);
+		this.props.sendQuery(value);
 		this.setState({
 			query: value.substr(0,30)
 		})
@@ -165,9 +169,9 @@ export default class Header extends React.PureComponent {
 					<IconWrapper>
 						<div>Welcome</div>
 						<form>
-							<input
+							<SearchInput
 								type='text'
-								placeholder="Search for..."
+								placeholder="Not Ready to Use..."
 								ref={input => this.search = input}
 								onChange={this.handleInputChange}
 								value={this.state.query}
