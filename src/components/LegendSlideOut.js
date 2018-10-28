@@ -69,6 +69,12 @@ export default class LegendSlideOut extends React.PureComponent {
 			focusLegend: false,
 		};
 	}
+
+	handleClick = () => {
+		this.setState(prevState => ({
+			focusLegend: !prevState.focusLegend,
+		}));
+	}
 	
 	handleLegendFocus = () => {
 		this.setState(prevState => ({
@@ -101,7 +107,7 @@ export default class LegendSlideOut extends React.PureComponent {
 					</Ul>
 					</Content>
 				</LegendPullOut>
-				<LegendButton focusLegend={focusLegend} className='material-icons' onFocus={this.handleLegendFocus} onBlur={this.handleLegendBlur}>arrow_forward_ios</LegendButton>
+				<LegendButton focusLegend={focusLegend} className='material-icons' onFocus={this.handleLegendFocus} onBlur={this.handleLegendBlur} onClick={this.handleClick}>{focusLegend ? 'arrow_back_ios' : 'arrow_forward_ios'}</LegendButton>
 			</React.Fragment>
 		)
 	}
