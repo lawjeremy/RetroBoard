@@ -17,6 +17,7 @@ const Wrapper = styled.div`
 	justify-content: space-between;
 	margin: 0px auto;
 	min-height: 100vh;
+	margin-top: 200px;	
 `;
 
 const socket = io.connect('35.182.139.132:3000');
@@ -58,8 +59,8 @@ export default class App extends Component {
 		const { search } = this.props
 		return (
 			<SocketProvider socket={socket}>
-				<Wrapper className="App">   
-					<Header sendQuery={this.getQuery} userName={userName}/>
+				<Header sendQuery={this.getQuery} userName={userName}/>
+				<Wrapper className="App">  					
 					<Board search={query} userName={userName} style={{ flexGrow: 1 }} />
 					<Footer/>
 				</Wrapper>
