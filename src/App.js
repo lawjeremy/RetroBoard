@@ -9,6 +9,8 @@ import styled from 'styled-components';
 import Board from './components/Board';
 import Header from './components/Header';
 import Footer from './components/Footer';
+
+import Modal from 'react-bootstrap/lib/Modal';
 import randomName from 'random-name';
 
 const Wrapper = styled.div`
@@ -24,7 +26,7 @@ const socket = io.connect('35.182.139.132:3000');
 
 const genTitle = () => {
 	const titles = ['DJ', 'Señor', 'Sir', 'Sire', 'Your Grace', 'Master', 'The Honorable', 'Doctor', 'Captain', 'Colonel', 'Madam', 'Princess', 'Prince', 'Humperdink', 'Mayor', 'Security Chief', 'Darth', 'First Officer', 'Sheriff', 'Coach']
-	const rand = Math.floor( Math.random() * 20 );
+	const rand = Math.floor( Math.random() * titles.length);
 	return titles[rand];
 };
 
@@ -34,9 +36,9 @@ export default class App extends Component {
 		this.state = {
 			userName: '',
 			query: '',
+			show: false,
 		};
 	}
-
 
 	componentDidMount(){
 		this.setState({
@@ -44,22 +46,58 @@ export default class App extends Component {
 		});
 	}
 
+	handleClose = () => {
+		this.setState({ show: false });
+	}
+	
 	getQuery = (data) => {
 		this.setState({
 			query: data
 		});
 	}
 
+	exportData = (cardList) => {
+		const ArrayCards = cardList.reduce((accum, e)=>{ 
+			const cardText = `\n## Card Title (${e.vote})\n${e.text}\n`;
+			return accum + cardText;
+		 }, '');
+
+		this.setState({ 
+			show: false,
+			exportedData: ArrayCards,
+
+		})
+		// console.log(ArrayCards);
+		window.prompt('test', ArrayCards);
+	} 
+	
+
 	render() {
-		const { userName, query } = this.state
-		console.log('App data: ', query)
+		const { userName, query, show, exportedData } = this.state
+		console.log('App data: ', query);
+
 		return (
 			<SocketProvider socket={socket}>
-				<Header sendQuery={this.getQuery} userName={userName}/>
-				<Wrapper className="App">  					
-					<Board searchContent={query} userName={userName} style={{ flexGrow: 1 }} />
+				<Header handleExport={this.exportData} sendQuery={this.getQuery} userName={userName}/>
+				<Wrapper className="App">  								
+					<Board searchContent={query} userName={userName} style={{ flexGrow: 1 }} />					
 					<Footer/>
 				</Wrapper>
+				{/* {show && (
+					<div className="static-modal">
+					<Modal.Dialog backdrop='static'>
+						<Modal.Header>
+						<Modal.Title>Modal title</Modal.Title>
+						</Modal.Header>
+
+						<Modal.Body>{exportedData}</Modal.Body>
+
+						<Modal.Footer>
+							<button onClick={this.handleClose}>Close</button>
+						</Modal.Footer>
+					</Modal.Dialog>
+					</div>
+				)} */}
 			</SocketProvider>
 		);
 	}
