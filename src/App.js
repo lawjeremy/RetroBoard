@@ -10,7 +10,7 @@ import Board from './components/Board';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
-import { Modal } from 'react-bootstrap';
+import Modal from 'react-bootstrap/lib/Modal';
 import randomName from 'random-name';
 
 const Wrapper = styled.div`
@@ -20,9 +20,6 @@ const Wrapper = styled.div`
 	margin: 0px auto;
 	min-height: 100vh;
 	margin-top: 100px;	
-`;
-
-const ModalWrap = styled.div`
 `;
 
 const socket = io.connect('35.182.139.132:3000');
@@ -59,71 +56,48 @@ export default class App extends Component {
 		});
 	}
 
-	exportData = () => {
-		const ActionItems = [
-			{
-				text: 'Hi',
-				id: 1,
-				comments:['Boo you suck'],
-				vote: 3,
-				isFavourite: true,
-				user: 'DJ Joe Blow'
-			},
-			{
-				text: 'MP rocks',
-				id: 2,
-				comments:['Yay me'],
-				vote: 3,
-				isFavourite: true,
-				user: 'Captian Jim Blow'
-			},
-			{
-				text: 'Transactional Logging Blows',
-				id: 3,
-				comments:['This comment is invalid'],
-				vote: 3,
-				isFavourite: true,
-				user: 'Micheal'
-			},
-		]
-
-		const ArrayCards = ActionItems.reduce((accum, e)=>{ 
-			const cardText = `
-				### Card Title
-				${e.text}
-				votes: ${e.vote}
-			`;
+	exportData = (cardList) => {
+		const ArrayCards = cardList.reduce((accum, e)=>{ 
+			const cardText = `\n## Card Title (${e.vote})\n${e.text}\n`;
 			return accum + cardText;
 		 }, '');
 
-		this.setState({ show: true })
-		//  const blob = new Blob([ArrayCards], {type: 'text/markdown'});
-		//  const uri = URL.createObjectURL(blob);
-		//  window.open(uri);
-		// socket.emit('Export Data', )
+		this.setState({ 
+			show: false,
+			exportedData: ArrayCards,
+
+		})
+		// console.log(ArrayCards);
+		window.prompt('test', ArrayCards);
 	} 
+	
 
 	render() {
-		const { userName, query, show } = this.state
+		const { userName, query, show, exportedData } = this.state
 		console.log('App data: ', query);
 
 		return (
 			<SocketProvider socket={socket}>
 				<Header handleExport={this.exportData} sendQuery={this.getQuery} userName={userName}/>
-				<Wrapper className="App">  					
-					<Board searchContent={query} userName={userName} style={{ flexGrow: 1 }} />
-					<ModalWrap className="static-modal">
-						<Modal.Dialog show={show}>
-							<Modal.Header>
-								<Modal.Title>Modal title</Modal.Title>
-							</Modal.Header>
-							<Modal.Footer>
-								<button onClick={this.handleClose}>Close</button>
-							</Modal.Footer>
-						</Modal.Dialog>	
-					</ModalWrap>					
+				<Wrapper className="App">  								
+					<Board searchContent={query} userName={userName} style={{ flexGrow: 1 }} />					
 					<Footer/>
 				</Wrapper>
+				{/* {show && (
+					<div className="static-modal">
+					<Modal.Dialog backdrop='static'>
+						<Modal.Header>
+						<Modal.Title>Modal title</Modal.Title>
+						</Modal.Header>
+
+						<Modal.Body>{exportedData}</Modal.Body>
+
+						<Modal.Footer>
+							<button onClick={this.handleClose}>Close</button>
+						</Modal.Footer>
+					</Modal.Dialog>
+					</div>
+				)} */}
 			</SocketProvider>
 		);
 	}
