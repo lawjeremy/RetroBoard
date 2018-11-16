@@ -8,6 +8,8 @@ import { fetch, save } from '../data/comment';
 import PropTypes from 'prop-types';
 import uniqid from 'uniqid';
 import LegendSlideOut from './LegendSlideOut';
+import ColorPicker from './ColorPicker';
+import ChangeableText from './ChangeableText';
 
 const Wrapper = styled.div`
 	display: flex;
@@ -81,10 +83,11 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 /**
  * Returns a default card object
  */
-const default_Card = () => {
+const genBlankCard = (author) => {
 	return {
 		id: uniqid(),
-		text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+		text: '',
+		author,
 		votes: 0,
 		isFavourite: false,
 		comments: [],
@@ -280,11 +283,13 @@ class Board extends React.PureComponent {
 	}
 	
 	// pushes a card onto state
-	addCard = (droppableId, card = default_Card()) => {
+	addCard = (droppableId, author) => {
 		
+		const newCard = genBlankCard(author);
+
 		this.setState(prevState => {
 			const contentCol = this.getList(prevState, droppableId).slice();
-			contentCol.push(card);
+			contentCol.push(newCard);
 			return {
 				[this.droppableIds[droppableId]]: contentCol,
 				counter: prevState.counter+1,
@@ -350,6 +355,18 @@ class Board extends React.PureComponent {
 		// this.setState({lists: cards});
 	}
 
+	handleChangeBkgColor = listId => bkgColor => {
+		this.setState(prevState => ({
+			lists: prevState.lists.map(item => ({ ...item, bkgColor: item.listId === listId ? bkgColor.hex : item.bkgColor  })),
+		}));
+	}
+
+	handleTitleChange = listId => title => {
+		this.setState(prevState => ({
+			lists: prevState.lists.map(item => ({ ...item, title: item.listId === listId ? title : item.title  })),
+		}));
+	}
+
 	droppableIds = {
         droppable1: 'list1',
         droppable2: 'list2',
@@ -360,7 +377,7 @@ class Board extends React.PureComponent {
 	
 	render() {
 
-		const { lists, focusLegend } = this.state; 
+		const { lists } = this.state; 
 		const { socket, userName } = this.props;
 		
 		return (
@@ -377,9 +394,20 @@ class Board extends React.PureComponent {
 									list.bkgColor,
 									snapshot.isDraggingOver
 								)}>
-								<h2 className="display-4">{list.title}</h2>
+								<h2 className="display-4">
+									<ChangeableText 
+										value={list.title} 
+										handleChange={this.handleTitleChange(list.listId)} 
+									/>
+									<ColorPicker 
+										bkgColor={list.bkgColor} 
+										handleChangeBkgColor={this.handleChangeBkgColor(list.listId)} 
+									/>
+								</h2>
+								
+								
            						<Ruler className="my-4" />
-								<AddCardButton className="btn btn-outline-secondary btn-lg" onClick={() => this.addCard(list.droppableId)}>
+								<AddCardButton className="btn btn-outline-secondary btn-lg" onClick={() => this.addCard(list.droppableId, userName)}>
 									Add card <i className="material-icons">add_circle_outline</i>					
 								</AddCardButton>
 								{this.state[list.listId] && this.state[list.listId].map(
@@ -415,7 +443,7 @@ class Board extends React.PureComponent {
 														createComment={this.createComment(item.id)}
 														deleteComment={this.deleteComment(item.id)}
 														comments={item.comments}
-														title={`${userName} says:`}
+														author={item.author}
 													/>
 												</div>
 											)}

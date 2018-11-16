@@ -139,6 +139,7 @@ class Card extends Component {
 		deleteComment: PropTypes.func,
 		removeCard: PropTypes.func,
 		isEditable: PropTypes.bool,
+		author: PropTypes.string, // person who created the card
 	}
 
 	static defaultProps = {
@@ -146,6 +147,7 @@ class Card extends Component {
 		comments: [],
 		favourite: false,
 		isEditable: true,
+		author: 'Anonymous',
 	};
 
 	/*
@@ -179,14 +181,15 @@ class Card extends Component {
 	}	
 
 	handleSaveCard = (e) => {
-		const { id, listId } = this.props;
+		const { id, listId, finalizeCard, socket, author } = this.props;
 		const { text } = this.state;
 
-		this.props.finalizeCard(text);
-		this.props.socket.emit('save', {
+		finalizeCard(text);
+		socket.emit('save', {
 			text,
 			id,
-			listId
+			listId,
+			author,
 		});
 		this.setState({
 			isEditable: false,
@@ -208,7 +211,7 @@ class Card extends Component {
 
 	render() {
 
-		const {id, title, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
+		const {id, author, bkgColor, removeCard, toggleFavourite, favourite, vote = 0, addVote, comments = [], createComment, deleteComment} = this.props;
 
 		const { text, isShowComments, isEditable } = this.state;
 		// console.log(text);
@@ -223,7 +226,7 @@ class Card extends Component {
 							{favourite === true ? 'star' : 'star_border'}
 						</button>
 					</ButtonGroup>
-					<DragHandle className="cursor"><div>{title}</div></DragHandle>
+					<DragHandle className="cursor"><div>{`${author} says: `}</div></DragHandle>
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons' onClick={() => addVote(1)}>thumb_up</button>
 						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>

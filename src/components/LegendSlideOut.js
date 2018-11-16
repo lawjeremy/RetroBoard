@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const LegendPullOut = styled.div`
@@ -61,56 +61,36 @@ const Content = styled.div`
 	transition: 0.3s;	
 `;
 
-export default class LegendSlideOut extends React.PureComponent {
+export default function LegendSlideOut() {
 	
-	constructor(props) {
-		super(props);
-		this.state = {
-			focusLegend: false,
-		};
-	}
+	const [focusLegend, setFocusLegend] = useState(false);
 
-	handleClick = () => {
-		this.setState(prevState => ({
-			focusLegend: !prevState.focusLegend,
-		}));
-	}
-	
-	handleLegendFocus = () => {
-		this.setState(prevState => ({
-			focusLegend: true,
-		}));
-	}
-
-	handleLegendBlur = () => {
-		this.setState(prevState => ({
-			focusLegend: false,
-		}));
-	}
-
-	render() {
-		const {focusLegend} = this.state;
-		return (
-			<React.Fragment>
-				<LegendPullOut focusLegend={focusLegend}>	
-					<CloseButton className='btn btn-outline-light material-icons'>close</CloseButton>			
-					<Content focusLegend={focusLegend}>
-					<h2>Legend</h2>
-					<hr></hr>
-					<Ul>
-						<Li><i className='material-icons'>star</i><span> pin card (not draggable)</span></Li>
-						<Li><i className='material-icons'>thumb_up</i><span> upvote</span></Li>
-						<Li><i className='material-icons'>thumb_down</i><span> downvote</span></Li>
-						<Li><i className='material-icons'>edit</i><span> edit card [or double click]</span></Li>
-						<Li><i className='material-icons'>close</i><span> delete card</span></Li>
-						<Li><i className='material-icons'>chat_bubble_outline</i><span> toggle comments</span></Li>
-					</Ul>
-					</Content>
-				</LegendPullOut>
-				<LegendButton focusLegend={focusLegend} className='material-icons' onFocus={this.handleLegendFocus} onBlur={this.handleLegendBlur} onClick={this.handleClick}>{focusLegend ? 'arrow_back_ios' : 'arrow_forward_ios'}</LegendButton>
-			</React.Fragment>
-		)
-	}
-
-
-}
+	return (
+		<React.Fragment>
+			<LegendPullOut focusLegend={focusLegend}>	
+				<CloseButton className='btn btn-outline-light material-icons'>close</CloseButton>			
+				<Content focusLegend={focusLegend}>
+				<h2>Legend</h2>
+				<hr></hr>
+				<Ul>
+					<Li><i className='material-icons'>star</i><span> pin card (not draggable)</span></Li>
+					<Li><i className='material-icons'>thumb_up</i><span> upvote</span></Li>
+					<Li><i className='material-icons'>thumb_down</i><span> downvote</span></Li>
+					<Li><i className='material-icons'>edit</i><span> edit card [or double click]</span></Li>
+					<Li><i className='material-icons'>close</i><span> delete card</span></Li>
+					<Li><i className='material-icons'>chat_bubble_outline</i><span> toggle comments</span></Li>
+				</Ul>
+				</Content>
+			</LegendPullOut>
+			<LegendButton 
+				className='material-icons'
+				focusLegend={focusLegend}  
+				onFocus={() => setFocusLegend(true)} 
+				onBlur={() => setFocusLegend(false)} 
+				onClick={() => setFocusLegend(!focusLegend)}
+			>
+					{focusLegend ? 'arrow_back_ios' : 'arrow_forward_ios'}
+			</LegendButton>
+		</React.Fragment>
+	);
+};
