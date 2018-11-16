@@ -54,6 +54,16 @@ const Ul = styled.ul`
 	margin: 0px;
 `;
 
+const Button = styled.button`
+	border: none;
+	background-color: transparent;
+	color: inherit;
+	&: hover {
+		background: rgba(255,255,255,0.4);
+	}
+`;
+
+
 const Li = styled.li`
 	display: inline;	
 	line-height: 50px;
@@ -180,7 +190,7 @@ export default class Header extends React.PureComponent {
 					</IconWrapper>
 					<SettingsWrapper>
 						<div>{userName}</div>
-						<SettingButton className='btn btn-outline-light material-icons'>settings</SettingButton>
+						{/* <SettingButton className='btn btn-outline-light material-icons'>settings</SettingButton> */}
 					</SettingsWrapper>				
 				</Wrapper>
 				<BottomNav>
@@ -191,9 +201,8 @@ export default class Header extends React.PureComponent {
 						<Li><a href=''>Here?</a></Li>
 					</Ul>
 					<Ul>
-						<Li><a href=''>Maybe</a></Li>
-						<Li><a href=''>Exports</a></Li>
-						<Li><a href=''>Here?</a></Li>
+						<Li><a href=''>Copy Action Items</a></Li>
+						<Li><Button onClick={this.props.handleExport}>Export Action Items</Button></Li>
 					</Ul>
 				</BottomNav>
 			</Root>
