@@ -10,7 +10,6 @@ import Board from './components/Board';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
-import Modal from 'react-bootstrap/lib/Modal';
 import randomName from 'random-name';
 
 const Wrapper = styled.div`

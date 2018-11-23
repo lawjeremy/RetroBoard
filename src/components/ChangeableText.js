@@ -9,13 +9,19 @@ const StyledInput = styled.input`
     display: inline-block;
     width: 300px;
     border: none;
+    outline: 1px solid;
     font-weight: normal;
+    background-color: transparent;
+    font-family: inherit;
+    font-weight: 300;
+    padding: 5px;
 `;
 
 export default function ChangeableText(props) {
 
     const { value, handleChange } = props;
-    const [isEditable, setIsEditable] = useState(true);    
+    const [isEditable, setIsEditable] = useState(false);    
+    const [isFocused, setIsFocused] = useState(false);
     const [textValue, setTextValue] = useState(value);    
 
     return (
@@ -28,7 +34,16 @@ export default function ChangeableText(props) {
                         value={textValue} 
                         onChange={e => setTextValue(e.target.value)} 
                         onBlur={e => {
-                            setIsEditable(true); handleChange(e.target.value);
+                            setIsFocused(false);
+                            setIsEditable(false); 
+                            handleChange(e.target.value);
+                        }}
+                        onFocus={e => setIsFocused(true)}
+                        onKeyPress={e => {
+                            if (isFocused === true && e.key === 'Enter') {
+                                setIsEditable(false);
+                                handleChange(e.target.value);
+                            }     
                         }}
                     />
                 ) : (

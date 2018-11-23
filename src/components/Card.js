@@ -220,7 +220,7 @@ class Card extends Component {
 				<HeaderBar>
 					<ButtonGroup>
 						<button className='btn btn-outline-light material-icons'
-							onClick={toggleFavourite}
+							onClick={() => toggleFavourite(!favourite)}
 							title='Pin this card'
 						>
 							{favourite === true ? 'star' : 'star_border'}
@@ -228,9 +228,9 @@ class Card extends Component {
 					</ButtonGroup>
 					<DragHandle className="cursor"><div>{`${author} says: `}</div></DragHandle>
 					<ButtonGroup>
-						<button className='btn btn-outline-light material-icons' onClick={() => addVote(1)}>thumb_up</button>
+						<button className='btn btn-outline-light material-icons' onClick={() => addVote(vote + 1)}>thumb_up</button>
 						<VoteResult negative={Math.sign(vote) < 0}>{vote}</VoteResult>
-						<button className='btn btn-outline-light material-icons' onClick={() => addVote(-1)}>thumb_down</button>
+						<button className='btn btn-outline-light material-icons' onClick={() => addVote(vote - 1)}>thumb_down</button>
 						<button className='btn btn-outline-light material-icons' onClick={removeCard}>clear</button>
 					</ButtonGroup>						
 				</HeaderBar>	
