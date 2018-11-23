@@ -56,11 +56,15 @@ export default class App extends Component {
 		});
 	}
 
-	exportData = (cardList) => {
-		const ArrayCards = cardList.reduce((accum, e)=>{ 
+	exportData = (cards) => {
+		console.log('Im Here');
+		// socket.on('connected', (cards) => {
+		//Jeremy Note: this is the place we need dthe card data to filter through.
+			// console.log('inside socket');
+		const ArrayCards = cards.reduce((accum, e)=>{ 
 			const cardText = `\n## Card Title (${e.vote})\n${e.text}\n`;
 			return accum + cardText;
-		 }, '');
+		}, '');
 
 		this.setState({ 
 			show: false,
@@ -69,6 +73,7 @@ export default class App extends Component {
 		})
 		// console.log(ArrayCards);
 		window.prompt('test', ArrayCards);
+		// });
 	} 
 	
 
