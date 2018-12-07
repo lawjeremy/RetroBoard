@@ -18,12 +18,12 @@ MongoClient.connect('mongodb://127.0.0.1:27017', { useNewUrlParser: true }, (err
   });
   // ... start the server
   http.listen(3000, function(){
-    console.log('listening on *:3000');
+    console.log('listening on port 3000');
   });
 });
 
 app.get('/', function(req, res){
-  res.sendStatus(404);
+  res.status(404).send('retroboard');
 });
 
 io.on('connection', function(socket){
