@@ -20,8 +20,8 @@ MongoClient.connect('mongodb://127.0.0.1:27017', { useNewUrlParser: true }, (err
         console.log(docs);
   });
   // ... start the server
-  http.listen(80, function(){
-    console.log('listening on port 80');
+  http.listen(3000, function(){
+    console.log('listening on port 3000');
   });
 });
 
