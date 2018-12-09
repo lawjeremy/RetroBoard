@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 var path = require('path');
 io.set('origins', '*:*');
 
-app.use(express.static('static'))
+app.use(express.static('static'));
 
 let db;
 const MongoClient = require('mongodb').MongoClient
