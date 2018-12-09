@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 	margin-top: 100px;	
 `;
 
-const socket = io.connect('35.182.139.132:3000');
+const socket = io.connect('52.60.121.216');
 
 const genTitle = () => {
 	const titles = ['DJ', 'Señor', 'Sir', 'Sire', 'Your Grace', 'Master', 'The Honorable', 'Doctor', 'Captain', 'Colonel', 'Madam', 'Princess', 'Prince', 'Humperdink', 'Mayor', 'Security Chief', 'Darth', 'First Officer', 'Sheriff', 'Coach']
