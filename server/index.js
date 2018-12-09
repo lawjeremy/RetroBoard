@@ -23,7 +23,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017', { useNewUrlParser: true }, (err
 });
 
 app.get('/', function(req, res){
-  res.status(404).send('retroboard');
+  res.status(200).sendFile(path.join(__dirname + '../build/index.html'));
 });
 
 io.on('connection', function(socket){
